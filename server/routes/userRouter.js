@@ -6,8 +6,9 @@
 module.exports = app =>{
     const userRouter = require("../controller/userController.js");
     var router = require("express").Router();
-    router.post("/", userRouter.create);
-    router.get("/",userRouter.login);
-    app.use('/api/login',router);
-    app.use('/api/adduser',router);
+    router.post("/api/login", userRouter.login);
+    //!不要使用axios发json的get 草你妈测半天
+    router.post("/api/adduser",userRouter.create);
+    app.use('/',router);
+   
 }

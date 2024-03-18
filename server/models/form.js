@@ -6,7 +6,7 @@
 module.exports=( sequelize, Sequelize)=>{
     const FormInfo = require("./formInfo")(sequelize, Sequelize)
     const Form = sequelize.define("form",{
-        logisticInfoAddr:{
+        logisticsInfoAddr:{
             type: Sequelize.STRING,
             allowNull: false,
             unique: true,
@@ -42,4 +42,5 @@ module.exports=( sequelize, Sequelize)=>{
             key: 'id'
         }
     })
+    return Form
 }

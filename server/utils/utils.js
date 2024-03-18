@@ -3,7 +3,7 @@
  * @Date: 2024-02-03 23:44:20
  * @Description: 
  */
-
+const CryptoJS = require('crypto-js')
 /**
  * @description: 生成UUID
  * @return {*} UUID
@@ -32,7 +32,17 @@ function addressToString( address){
      // 将处理后的字符串与0x前缀重新组合  
      return '0x' + result;  
 }
+function aesEncrypt(text, passphrase) {  
+    var ciphertext = CryptoJS.AES.encrypt(text, passphrase);
+    return ciphertext.toString(); 
+}  
+function aesDecrypt(ciphertext, passphrase) {  
+    var bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+    return bytes.toString(CryptoJS.enc.Utf8); 
+}  
 module.exports={
     uuid,
     addressToString,
+    aesDecrypt,
+    aesEncrypt
 }

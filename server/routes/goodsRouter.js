@@ -1,11 +1,8 @@
 /*
  * @Author: xpxxy
  * @Date: 2024-02-20 21:57:47
- * @Description: 
+ * @Description: 商品的所有路由定义
  */
-
-
-
 module.exports = app =>{
     const goodsRouter = require("../controller/goodsController.js");
     var router = require("express").Router();

@@ -204,7 +204,7 @@ async function storeProduct(token,data){
     try{
         let res = await axios(options);
         let productAddr = res.data.data.output;
-        console.log(res.data)
+        console.log(res.data.data.message)
         return utils.addressToString(productAddr);
     }catch(error){
         console.error(error);
@@ -262,7 +262,7 @@ async function createLogisticsForm(token,data){
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "createLogisticsForm",//调用的合约方法
-                "funcParam": [data.LogisticsInfoAddr, data.transitAddr, data.transitContact],
+                "funcParam": [data.logisticsInfoAddr, data.transitAddr, data.transitContact],
                 "contractAbi": contractAbi,
                 "contractId": contractID,
                 "contractAddress": contractAddr,//合约地址
@@ -368,6 +368,16 @@ async function getAllProducts(token,data){
                 "contractAddress": contractAddr,//合约地址
             }
     };
+    try{
+        let res = await axios(options);
+
+    }
+    catch(error){
+        console.error("出错了"+error)
+    }
+    
+
+
 }
 
 
@@ -377,10 +387,13 @@ module.exports = {
     searchUser,
     findOneGoods,
     storeProduct,
+    getAllProducts,
     createLogisticsInfo,
     getLogisticsInfo,
+    createLogisticsForm,
     getLogisticsForm,
-    getAllProducts,
+    
+    
     
 
 };

@@ -62,13 +62,15 @@ exports.create= async (req,res)=>{
         address: address,
         role:req.body.role
     };
-    User.create(user).then(data =>{
-        res.status(200).send({
-            code:'200',
-            message:"ok!",
-            data:data,
-        })
-        res.send(data);
+    await User.create(user).then(data =>{
+        
+        if(data.length!=0){
+            res.status(200).send({
+                code: '200',
+                message: "ok!",
+                data: data,
+            })
+        }
     }).catch(err =>{
         res.status(500).send({
             message: 
@@ -84,12 +86,13 @@ exports.create= async (req,res)=>{
  * @return {*} UUID
  * @requestType: GET
  */
-exports.login=(req,res)=>{
-    let user = {
+exports.login= async (req,res)=>{
+    const user = {
         phone:req.body.phone,
         pw:req.body.pw,
     }
-    if(!req.body.phone){
+    console.log(req.body)
+    if(!user.phone){
         res.status(400).send({
          message: "用户的手机号不得为空！"
         });
@@ -107,11 +110,14 @@ exports.login=(req,res)=>{
         where: { phone: user.phone ,pw: user.pw}
     }).then(data =>{
         // console.log(data)
-        if(data.length!==0){
+        if(data!=null){
+            let info = JSON.stringify(data[0])
+            console.log(info)
             res.status(200).send({
                 code:"200",
                 message:"登录成功！",
-                UUID:utils.uuid()
+                // UUID:utils.uuid(),
+                data: utils.aesEncrypt(info,'xpxxy')
 
             })
             return
@@ -123,11 +129,10 @@ exports.login=(req,res)=>{
                 // UUID:utils.uuid(),
                 // data:data
             })
-            
             return
         }
-        
     }).catch(err =>{
+        console.log(err)
         res.status(500).send({
             code:"500",
             message:"数据库出错",
