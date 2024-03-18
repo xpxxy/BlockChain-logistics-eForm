@@ -20,4 +20,4 @@ System requirement:
   ```
  DONT FORGET TO OPEN YOUR PORT FOR HTTP REQUEST BETWEEN WINDOWS AND LINUX 
  i set my VM net mode to NAT and open 5000-5004 port for webase, so you can access webase through localhost:5000-5004 on windows platform.
- WEBase need to disable verification code, just to check out webase official docs [[https://webasedoc.readthedocs.io/zh-cn/latest/docs/WeBASE/install.html#webase-web]]
+ WEBase need to disable verification code, just to check out webase official docs [webase Doc](https://webasedoc.readthedocs.io/zh-cn/latest/docs/WeBASE/install.html#webase-web)
