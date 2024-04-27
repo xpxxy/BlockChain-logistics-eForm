@@ -421,15 +421,15 @@ async function getFormInfo(token, data){
         //*为什么？
         //*因为合约报错信息样式如下:[ 'Call contract return error: Logistics address does not exist' ]，
         //*而正常返回是一个长度为5的数组
-        // if(rawData.length === 5){
-        //     rawData.forEach(item => {
-        //         result.push(JSON.parse(item))
-        //     }); 
-        //     console.log(result);
+        if(rawData.length === 5){
+            rawData.forEach(item => {
+                result.push(JSON.parse(item))
+            }); 
+            console.log(result);
             return rawData
-        // }else{
-        //     return result 
-        // }
+        }else{
+            return result 
+        }
         
         
     }catch(error){

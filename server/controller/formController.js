@@ -231,9 +231,9 @@ exports.getFormData = async (req, res)=>{
         let resData = await webase.getFormInfo(token,searchAddr);
         
         formData = resData;
-        res.status(200).send({
-            data:formData
-        })
+        // res.status(200).send({
+        //     data:formData
+        // })
     }catch(err){
         //webase连接出错，一般这个时候后端已经抛出终止了
         res.status(200).send({
