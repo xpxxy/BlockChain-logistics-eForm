@@ -10,8 +10,12 @@ module.exports=(sequelize, Sequelize)=>{
             type: Sequelize.STRING,
             allowNull: false
         },
+        name:{
+            type: Sequelize.STRING(20),
+            allowNull: false
+        },
         pw: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(20),
             allowNull: false
         },
         address: {
@@ -25,6 +29,11 @@ module.exports=(sequelize, Sequelize)=>{
         role: {
             type: Sequelize.ENUM('admin','user','transit'),
             allowNull: false
+        },
+        status: {
+            type: Sequelize.ENUM('on','off'),
+            allowNull: false,
+            defaultValue: 'on',
         }
     })
     return User

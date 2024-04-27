@@ -13,16 +13,20 @@
 //webase: admin Xpxxy123
 const account = "admin";
 const accountPwd = "ad3ebe5b756160942b0dff687e687df2ec615d3be6f8dcecf30536a5bdc935fb";
-//智能合约地址
-const contractAddr = "0xb2c7b791d168cbe410243ba50792cef47b75414d";
+const groupId = 'group0';
+//智能合约LogisticsForm(综合合约)地址
+const contractAddr = "0x21f3e1a1b648834aac88e0a2b9a78315db9ab8af";
 //合约部署者/调用合约人
-const xpxxy = "0x93cea6ace626a64615443caeaac14293bd60895d";
+const xpxxy = "0x89e4dd8f5133a951817976704dc0fc6c541b1456";
+//合约在webase的ID
 const contractID = 200003;
-const contractAbi = [{"inputs":[{"internalType":"address","name":"_logisticsInfoAddress","type":"address"},{"internalType":"address","name":"_commodityInfoAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"formAddress","type":"address"},{"indexed":true,"internalType":"address","name":"logisticsAddress","type":"address"}],"name":"FormCreated","type":"event"},{"inputs":[],"name":"commodityInfo","outputs":[{"internalType":"contract CommodityInfo","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_logisticsAddress","type":"address"},{"internalType":"address","name":"_transitAddress","type":"address"},{"internalType":"string","name":"_transitContact","type":"string"}],"name":"createLogisticsForm","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_senderAddress","type":"address"},{"internalType":"string","name":"_logisticsCompanyName","type":"string"},{"internalType":"string","name":"_senderAddressInfo","type":"string"},{"internalType":"string","name":"_senderContact","type":"string"},{"internalType":"address","name":"_receiverAddress","type":"address"},{"internalType":"address","name":"_productAddress","type":"address"},{"internalType":"string","name":"_receiverAddressInfo","type":"string"},{"internalType":"string","name":"_receiverContact","type":"string"}],"name":"createLogisticsInfo","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"formAddresses","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"forms","outputs":[{"internalType":"address","name":"logistics","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllForms","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllLogisticsAddresses","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllProducts","outputs":[{"internalType":"string[]","name":"","type":"string[]"},{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllProductsAddresses","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_formAddress","type":"address"}],"name":"getFormInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_logisticsAddress","type":"address"}],"name":"getLogisticsInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_productAddress","type":"address"}],"name":"getProductInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"logisticsInfo","outputs":[{"internalType":"contract LogisticsInfo","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_productionDate","type":"string"},{"internalType":"string","name":"_expiryDate","type":"string"},{"internalType":"string","name":"_type","type":"string"},{"internalType":"string","name":"_barcode","type":"string"}],"name":"storeProductInfo","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_formAddress","type":"address"},{"internalType":"address","name":"_transitAddress","type":"address"},{"internalType":"string","name":"_transitContact","type":"string"}],"name":"updateLogisticsForm","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+//合约的Abi
+const contractAbi = [{"inputs":[{"internalType":"address","name":"_logisticsInfoAddress","type":"address"},{"internalType":"address","name":"_commodityInfoAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"formAddress","type":"address"},{"indexed":true,"internalType":"address","name":"logisticsAddress","type":"address"}],"name":"FormCreated","type":"event"},{"inputs":[],"name":"commodityInfo","outputs":[{"internalType":"contract CommodityInfo","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_logisticsAddress","type":"address"},{"internalType":"address","name":"_transitAddress","type":"address"},{"internalType":"string","name":"_transitContact","type":"string"},{"internalType":"string","name":"_transitAddrInfo","type":"string"}],"name":"createLogisticsForm","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_senderAddress","type":"address"},{"internalType":"string","name":"_logisticsCompanyName","type":"string"},{"internalType":"string","name":"_senderAddressInfo","type":"string"},{"internalType":"string","name":"_senderContact","type":"string"},{"internalType":"address","name":"_receiverAddress","type":"address"},{"internalType":"address","name":"_productAddress","type":"address"},{"internalType":"string","name":"_receiverAddressInfo","type":"string"},{"internalType":"string","name":"_receiverContact","type":"string"}],"name":"createLogisticsInfo","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"formAddresses","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"forms","outputs":[{"internalType":"address","name":"logistics","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllForms","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllLogisticsAddresses","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllLogisticsInfo","outputs":[{"internalType":"string[]","name":"","type":"string[]"},{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllProducts","outputs":[{"internalType":"string[]","name":"","type":"string[]"},{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_formAddress","type":"address"}],"name":"getFormInfo","outputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_logisticsAddress","type":"address"}],"name":"getLogisticsInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_productAddress","type":"address"}],"name":"getProductInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"logisticsInfo","outputs":[{"internalType":"contract LogisticsInfo","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_productionDate","type":"string"},{"internalType":"string","name":"_expiryDate","type":"string"},{"internalType":"string","name":"_type","type":"string"},{"internalType":"string","name":"_barcode","type":"string"}],"name":"storeProductInfo","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_formAddress","type":"address"},{"internalType":"address","name":"_transitAddress","type":"address"},{"internalType":"string","name":"_transitContact","type":"string"},{"internalType":"string","name":"_transitAddrInfo","type":"string"}],"name":"updateLogisticsForm","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 
 const qs = require("qs");
 const axios = require("axios");
-const utils = require("../utils/utils.js")
+const utils = require("../utils/utils.js");
+
 
 /**
  * @description: 获取webase登录的token
@@ -96,7 +100,7 @@ async function webaseAddNewUser(token, data){
     var options = {
         method: 'POST',
         headers: { "content-type":"application/json", 'AuthorizationToken': 'Token '+token},
-        data: {'groupId': "1",'description':data.role,'userName': data.userID, 'account': 'admin' },
+        data: {'groupId': groupId,'description':data.role,'userName': data.userID, 'account': 'admin' },
         url: 'http://127.0.0.1:5001/WeBASE-Node-Manager/user/userInfo',
     };
     // console.log(options.headers)
@@ -145,7 +149,7 @@ async function searchUser(token,data){
  * @return {*} 返回商品的信息，需要用json.parse
  * @requestType POST 
  */
-async function findOneGoods(token,data){
+async function getOneGoods(token,data){
     var options={
         method:"post",
         url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
@@ -153,7 +157,7 @@ async function findOneGoods(token,data){
         // maxRedirects:1,
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user":xpxxy,//传入的交易用户
                 "contractName":"LogisticsForm",//调用的合约名
                 "funcName":"getProductInfo",//调用的合约方法
@@ -175,7 +179,6 @@ async function findOneGoods(token,data){
     }
     
 }
-
 /**
  * @description: 在链上存储商品
  * @param {*} token 用户token
@@ -190,7 +193,7 @@ async function storeProduct(token,data){
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "storeProductInfo",//调用的合约方法
@@ -224,7 +227,7 @@ async function createLogisticsInfo(token, data){
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "createLogisticsInfo",//调用的合约方法
@@ -258,7 +261,7 @@ async function createLogisticsForm(token,data){
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "createLogisticsForm",//调用的合约方法
@@ -292,7 +295,7 @@ async function getLogisticsInfo(token,data){
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "getLogisticsInfo",//调用的合约方法
@@ -324,7 +327,7 @@ async function getLogisticsForm(token,data){
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "getFormInfo",//调用的合约方法
@@ -351,14 +354,14 @@ async function getLogisticsForm(token,data){
  * @return {*} 返回一个JSON数组包含所有的商品信息
  * @requestType POST
  */
-async function getAllProducts(token,data){
+async function getAllProducts(token){
     var options = {
         method:'post',
         url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
         data:
             {
-                "groupId": 1,
+                "groupId": groupId,
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "getAllProducts",//调用的合约方法
@@ -370,6 +373,13 @@ async function getAllProducts(token,data){
     };
     try{
         let res = await axios(options);
+        let productInfo = JSON.parse(res.data.data[0])
+        // console.log(productInfo);
+        let parsedInfo = productInfo.map(product=>{return JSON.parse(product)})
+        let productAddr = JSON.parse(res.data.data[1])
+
+        return [parsedInfo,productAddr]
+        // console.log(productInfo+productAddr)
 
     }
     catch(error){
@@ -378,20 +388,67 @@ async function getAllProducts(token,data){
     
 
 
-}
+};
+/**
+ * @description: 查询链上表单数据(单次)
+ * @param {*} token 查询使用的token
+ * @param {*} data  查询的链码 string
+ * @return {*} 返回一个tuple JSON+array+array+array 需要做JSON.parse
+ * @requestType: 
+ */
+async function getFormInfo(token, data){
+    let options = {
+        method:'post',
+        url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
+        headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
+        data:
+            {
+                "groupId": groupId,
+                "user": xpxxy,//传入的交易用户
+                "contractName": "LogisticsForm",//调用的合约名
+                "funcName": "getFormInfo",//调用的合约方法
+                "funcParam": [data],
+                "contractAbi": contractAbi,
+                "contractId": contractID,
+                "contractAddress": contractAddr,//合约地址
+            }
+    };
+    try{
+        let res = await axios(options);
+        let rawData = res.data.data;
+        let result = [];
+        console.log(rawData);
+        //*为什么是小于2,
+        //*因为报错信息样式如下:[ 'Call contract return error: Logistics address does not exist' ]，
+        //*而正常返回是一个长度为4的数组
+        if(rawData.length === 4){
+            rawData.forEach(item => {
+                result.push(JSON.parse(item))
+            }); 
+            return result
+        }else{
+            return result 
+        }
+        
+        // console.log(res.data)
+    }catch(error){
+        console.error("出错了"+error.message)
+    }
+
+};
 
 
 module.exports = {
     getUserToken,
     webaseAddNewUser,
     searchUser,
-    findOneGoods,
     storeProduct,
     getAllProducts,
     createLogisticsInfo,
     getLogisticsInfo,
     createLogisticsForm,
     getLogisticsForm,
+    getFormInfo,
     
     
     

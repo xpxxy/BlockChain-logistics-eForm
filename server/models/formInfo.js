@@ -7,7 +7,7 @@ module.exports=( sequelize, Sequelize )=>{
     const Goods = require("./goods")(sequelize, Sequelize)
     const FormInfo = sequelize.define("formInfo",{
         senderAddr:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(42),
             allowNull: false
         },
         logisticsCompanyName: {
@@ -15,15 +15,15 @@ module.exports=( sequelize, Sequelize )=>{
             allowNull: false
         },
         senderAddressInfo:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(42),
             allowNull: false
         },
         senderContact:{
-            type: Sequelize.STRING,
+            type: Sequelize.BIGINT(11),
             allowNull: false
         },
         receiverAddr:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(42),
             allowNull: false
         },
         receiverAddressInfo:{
@@ -31,13 +31,18 @@ module.exports=( sequelize, Sequelize )=>{
             allowNull: false
         },
         receiverContact:{
-            type: Sequelize.STRING,
+            type: Sequelize.BIGINT(42),
             allowNull: false
         },
         logisticsInfoAddr:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(42),
             allowNull: false,
             unique:true,
+        },
+        status: {
+            type: Sequelize.ENUM('on','off'),
+            allowNull: false,
+            defaultValue: 'on',
         }
         
         

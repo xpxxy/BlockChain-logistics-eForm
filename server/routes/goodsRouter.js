@@ -9,8 +9,7 @@ module.exports = app =>{
     router.post("/api/findOneGoods", goodsRouter.findOneGoods);
     router.get("/api/findAllGoods", goodsRouter.findAllGoods);
     router.post("/api/addNewGoods", goodsRouter.addNewGoods);
+    router.post("/api/changeProductStatus", goodsRouter.changeProductStatus);
     app.use('/', router);
-    // app.use('/', router);
-    // app.use('/', router);
     
 }

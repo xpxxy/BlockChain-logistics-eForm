@@ -9,7 +9,7 @@ module.exports=( sequelize, Sequelize)=>{
         logisticsInfoAddr:{
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true,
+            unique: false,
 
         },
         transitAddr:{
@@ -20,6 +20,10 @@ module.exports=( sequelize, Sequelize)=>{
             type: Sequelize.STRING,
             allowNull: true,
         },
+        transitAddrInfo:{
+            type: Sequelize.STRING,
+            allowNull:true,
+        },
         formAddr:{
             type: Sequelize.STRING,
             allowNull: false,
@@ -28,6 +32,7 @@ module.exports=( sequelize, Sequelize)=>{
         status:{
             type: Sequelize.ENUM('on','off','delete'),
             allowNull:false,
+            defaultValue:'on',
             
         },
     

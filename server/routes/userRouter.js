@@ -9,6 +9,7 @@ module.exports = app =>{
     router.post("/api/login", userRouter.login);
     //!不要使用axios发json的get 草你妈测半天
     router.post("/api/adduser",userRouter.create);
+    router.post("/api/changeStatus", userRouter.changeStatus);
     app.use('/',router);
    
 }

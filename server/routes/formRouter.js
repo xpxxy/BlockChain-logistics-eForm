@@ -8,7 +8,7 @@ module.exports = app =>{
     router.post("/api/createLogisticsInfo", formRouter.createLogisticsInfo);
     router.get("/api/findOneLogisticsInfo", formRouter.findOneLogisticsInfo);
     router.get("/api/findAllLogisticsInfo", formRouter.findAllLogisticsInfo);
-    // router.get("/api/testFind",formRouter.testFind);
+    router.get("/api/findForm",formRouter.getFormData);
     app.use('/', router);
     
 }

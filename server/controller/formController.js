@@ -108,85 +108,51 @@ exports.createLogisticsInfo = async (req, res) => {
         return
     })
 };
-// exports.createForm = async (req, res) =>{
-//     const form = {
-//         logisticsInfoAddr: req.body.logisticsInfoAddr,
-//         transitAddr: req.body.transitAddr,
-//         transitContact: req.body.transitContact,
-//         logisticsInfoID:"",
-//         status:req.body.status,
-//         formAddr:"",
-//     }
-//     try{
-//         let token = await webase.getUserToken();
-//         let formAddr = await webase.createLogisticsForm(token, form)
-//         form.formAddr = formAddr;
-//     }
-//     catch(error){
-//         console.error("获取数据时出错"+error.message);
+exports.createForm = async (req, res) =>{
+    const form = {
+        logisticsInfoAddr: req.body.logisticsInfoAddr,
+        transitAddr: req.body.transitAddr,
+        transitContact: req.body.transitContact,
+        transitAddrInfo: req.body.transitAddrInfo,
+        logisticsInfoID:"",
+        status:req.body.status,
+        formAddr:"",
+    }
+    try{
+        let token = await webase.getUserToken();
+        let formAddr = await webase.createLogisticsForm(token, form)
+        form.formAddr = formAddr;
+    }
+    catch(error){
+        console.error("获取数据时出错"+error.message);
 
-//     }
-//     if(!form.formAddr){
-//         res.status(400).send({
-//             code:"400",
-//             message:"formAddr为空，请检查连接!"
-//         })
-//         return
-//     }
-//     FormInfo.findOne({attribute:["logisticsInfoID","logisticsInfoAddr"],where:{logisticsInfoAddr:form.logisticsInfoAddr}})
-//     Form.create(form,{include:{where}}).then(data=>{
-//         if(data.length !=0){
-//             res.status(200).send({
-//                 code:"200",
-//                 message:"ok!",
-//                 data:data
-//             })
-//         }
-//     }).catch(err=>{
-//         res.status(500).send({
-//             code:"500",
-//             message:
-//                 err.message || "数据库错误，检查console"
-//         })
-//     })
+    }
+    if(!form.formAddr){
+        res.status(400).send({
+            code:"400",
+            message:"formAddr为空，请检查连接!"
+        })
+        return
+    }
+    FormInfo.findOne({attribute:["logisticsInfoID","logisticsInfoAddr"],where:{logisticsInfoAddr:form.logisticsInfoAddr}})
+    Form.create(form,{include:{where}}).then(data=>{
+        if(data.length !=0){
+            res.status(200).send({
+                code:"200",
+                message:"ok!",
+                data:data
+            })
+        }
+    }).catch(err=>{
+        res.status(500).send({
+            code:"500",
+            message:
+                err.message || "数据库错误，检查console"
+        })
+    })
 
-// }
-// exports.testFind = async (req, res)=>{
-//     const form={
-//         logisticsInfoAddr: req.body.logisticsInfoAddr,
-//         transitAddr: req.body.transitAddr,
-//         transitContact: req.body.transitContact,
-//         logisticsInfoID:0,
-//         status:req.body.status,
-//         formAddr:"",
-//     }
-//     //查询是异步的，如果要马上获取值并进行下一步需要await
-//     await FormInfo.findOne({
-//             attribute:[ "id","logisticsInfoAddr" ],
-//             where:{ logisticsInfoAddr: form.logisticsInfoAddr }
-//         }).then(data=>{
-//             // console.log(data.id)
-//             form.logisticsInfoID=data.id
-//             // console.log(form.logisticsInfoID)
-//         })
-        
-//     // console.log(form)
-//     Form.create(form).then(data=>{
-//         if(data.length !=0){
-//             res.status(200).send({
-//                 code:"200",
-//                 message:"ok!",
-//                 data:data
-//             })
-//         }
-//     }).catch(err=>{
-//         res.status(500).send({
-//             code:"500",
-//             message:
-//                 err.message || "数据库错误，检查console"
-//         })
-//     })
-// }
+}
+
 /**
  * @description: 查找所有的表单头信息
  * @param {*} req 请求头
@@ -250,8 +216,45 @@ exports.findAllLogisticAddr = async (req, res)=>{
         })
     })
 };
+/**
+ * @description: 获取表单信息（链上查询）
+ * @param {*} req 请求体
+ * @param {*} res 返回体
+ * @return {*} 返回一个数组，第一部分是表单头信息，剩下的三组数据是中转方的溯源数据。
+ * @requestType: get
+ */
+exports.getFormData = async (req, res)=>{
+    const formAddr = req.body.formAddr
+    try{
+        let token = await webase.getUserToken();
+        let formData = await webase.getFormInfo(token,formAddr);
 
+    }catch(err){
+        res.status(200).send({
+            code:"4007",
+            message:"webase出错"
+        })
+        console.error(err.message);
+    }
+    
+   
+}
+// exports.testFind = async (req, res)=>{
+//     const formAddr = req.body.formAddr
+//     try{
+//         let token = await webase.getUserToken();
+//         let formData = await webase.getFormInfo(token,formAddr);
+//         res.status(200).send({
+//             code:"4000",
+//             message:"ok",
+//             data:formData,
+//         })
 
+//     }catch(err){
+//         console.error(err.message);
+//     }
+   
+// }
 
 
 

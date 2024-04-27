@@ -5,6 +5,7 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import path from 'path'
 
 
 
@@ -33,6 +34,11 @@ export default defineConfig({
       autoInstall: true,
     }),
   ],
+  resolve: {
+    alias:{
+      '@': path.resolve('./src'),
+    }
+  },
   server:{
     // open: '/index.html',
     // host:'localhost',

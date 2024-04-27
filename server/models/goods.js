@@ -28,6 +28,11 @@ module.exports=(sequelize, Sequelize)=>{
            unique:true,
            primaryKey:true,
            
+       },
+       status:{
+            type: Sequelize.ENUM('on','off'),
+            allowNull: false,
+            defaultValue:'on',
        }
    })
    return Goods

@@ -32,7 +32,7 @@
                         <img style="width: 100px" src="../../assets/logo.png" alt="Delivery logo" />
                     </el-form-item>
                     <el-form-item label="您的用户名" prop="userID">
-                        <el-input id="userID" placeholder="请输入您的用户名，请注意这将是凭证之一且不可更改！" v-model="ruleForm.userID">
+                        <el-input id="userID" placeholder="请输入您的用户名" v-model="ruleForm.userID">
                             <template #prefix>
                                 <el-icon class="el-input__icon">
                                     <i-ep-User />
@@ -41,7 +41,7 @@
                         </el-input>
                     </el-form-item>
                     <el-form-item label="您的手机号" prop="phone">
-                        <el-input id="phone" placeholder="请输入您的手机号，请注意这将是凭证之一且不可更改！" v-model="ruleForm.phone">
+                        <el-input id="phone" placeholder="请输入您的手机号" v-model="ruleForm.phone">
                             <template #prefix>
                                 <el-icon class="el-input__icon">
                                     <i-ep-Iphone />
@@ -155,13 +155,13 @@ function submit(){
             //等待注册接口
             await axios(options).then(async res => {
                 let data = res.data
-                if (data.code == '200') {
+                if (data.code == '1000') {
                     //将加载遮罩关闭
                     fullscreenLoading.value = false
                     //弹出提示
                     ElMessage.success("注册成功！即将前往个人中心")
                     await axios.post('http://localhost:3000/api/login',{"phone":ruleForm.phone,"pw":ruleForm.pw}).then(response=>{
-                        if(response.data.code=='200'){
+                        if(response.data.code=='1000'){
                             localStorage.setItem('userSession', response.data.data )
                             setTimeout(() => {
                                 router.push('/user')

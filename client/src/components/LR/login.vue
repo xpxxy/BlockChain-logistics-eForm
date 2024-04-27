@@ -4,7 +4,7 @@
             <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false"
                 >
                 <el-menu-item index="0">
-                    <img style="width: 60px" src="../../assets/logo.png" alt="Delivery logo" />
+                    <img style="width: 60px" src="@/assets/logo.png" alt="Delivery logo" />
                     <div class="mainTitle">区块链物流表单系统</div>
                 </el-menu-item>
 
@@ -38,7 +38,7 @@
                     hide-required-asterisk
                 >
                     <el-form-item>
-                        <img style="width: 100px" src="../../assets/logo.png" alt="Delivery logo" />
+                        <img style="width: 100px" src="@/assets/logo.png" alt="Delivery logo" />
                     </el-form-item>
                     <el-form-item label="手机号" prop="phone">
                         <el-input id="phone" placeholder="您的手机号" v-model="ruleForm.phone">
@@ -80,6 +80,7 @@
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
+import { aesDecrypt } from '@/utils/utils';
 import axios from 'axios'
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
@@ -120,11 +121,23 @@ function submit(){
             }
             axios(options).then(res => {
                 let data = res.data
-                if (data.code == '200') {
-                    fullscreenLoading.value = true
+                if (data.code == '2000') {
+                    fullscreenLoading.value = false
                     ElMessage.success("登陆成功！")
                     localStorage.setItem('userSession', data.data)
-                    router.push('/user')
+                    let info = JSON.parse(aesDecrypt(data.data,'xpxxy'))
+                    // console.log(info);
+                    if(info.role =='user'){
+                       router.push('/user') 
+                    }
+                    if(info.role == 'transit'){
+                        router.push('/transit')
+                    }
+                }
+                if (data.code == '2002'){
+                    fullscreenLoading.value = false
+                    ElMessage.error("密码错误！")
+                    
                 }
             }).catch(err=>{
                 fullscreenLoading.value = false
@@ -148,7 +161,7 @@ const toRegister=()=>{
   text-align: center;
 }
 .body{
-    background: url("../../assets/loginbg.jpg") no-repeat;
+    background: url("@/assets/loginbg.jpg") no-repeat;
     background-size: cover;
     height: 850px;
     
