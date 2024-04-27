@@ -12,7 +12,7 @@
             "name": "delivery",
             "username": "root",
             "database": "deliverydb",
-            "askForPassword": true
+            "password": "123321"
         }
     ]
 }

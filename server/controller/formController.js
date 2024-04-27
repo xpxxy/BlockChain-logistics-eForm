@@ -224,18 +224,59 @@ exports.findAllLogisticAddr = async (req, res)=>{
  * @requestType: get
  */
 exports.getFormData = async (req, res)=>{
-    const formAddr = req.body.formAddr
+    const searchAddr = req.body.formAddr
+    let formData=[];
     try{
         let token = await webase.getUserToken();
-        let formData = await webase.getFormInfo(token,formAddr);
-
-    }catch(err){
+        let resData = await webase.getFormInfo(token,searchAddr);
+        
+        formData = resData;
         res.status(200).send({
-            code:"4007",
+            data:formData
+        })
+    }catch(err){
+        //webase连接出错，一般这个时候后端已经抛出终止了
+        res.status(200).send({
+            code:"4005",
             message:"webase出错"
         })
         console.error(err.message);
     }
+    // if(formData.length===1){
+    //     //合约的参数不对，一般是信息填错了或者查询的数据不存在。
+    //     res.status(200).send({
+    //         code:"4004",
+    //         message:"合约参数有误，请检查",
+    //         data:formData
+    //     })
+    // }
+    // let formAddr = formData[1];
+    // let transitAddr = formData[2];
+    // let transitContact = formData[3];
+    // let transitAddrInfo = formData[4];
+    // let insertData=[];
+    // const form = {
+    //     logisticsInfoAddr:"",
+    //     transitAddr:"",
+    //     transitContact:"",
+    //     transitAddrInfo:"",
+    //     formAddr:""
+    // }
+    // //&创建电子表单会自动添加一次transit,这时相当于第一任溯源中间人为发起方自己，所以不用担心数组越界。
+    // for(var i = 0; i < transitAddr.length; i++){
+    //     form.formAddr = formAddr;
+    //     form.transitAddr = transitAddr[i];
+    //     form.transitContact = transitContact[i];
+    //     form.transitAddrInfo = transitAddrInfo[i];
+    //     insertData.push(form)
+    // }
+    // if(insertData.length!=0){
+    //     res.status(200).send({
+    //         code:"4000",
+    //         data:insertData
+    //     })
+    
+    // }
     
    
 }
