@@ -15,6 +15,7 @@ const User = db.user;
 const webase = require("../config/WeBase");
 // const { where } = require("sequelize");
 const utils = require("../utils/utils.js")
+const svgCaptcha = require('svg-captcha');
 
 
 
@@ -232,5 +233,26 @@ exports.changeStatus = async (req, res) => {
         })
         return;
     }
-    
+} 
+/**
+ * @description: 验证码服务接口
+ * @param {*} req 无
+ * @param {*} res 
+ * @return {*}返回验证码的svg和值
+ * @requestType: get
+ */    
+exports.getCaptcha = async (req,res)=>{
+    const captcha = svgCaptcha.create({
+        size:4,
+        noise:5,
+        fontSize:50,
+        width:100,
+        height:30,
+        color:true
+    });
+    req.session.captcha = captcha.text;
+    // res.type('svg')
+    res.status(200).send({
+        data:captcha.data
+    })
 }    

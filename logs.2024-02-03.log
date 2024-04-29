@@ -1,6 +1,0 @@
-[2024-02-03T12:38:03.448] [DEBUG] log_none - server on, now listening localhost:3000
-[2024-02-03T12:38:03.518] [DEBUG] log_none - Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'users' AND TABLE_SCHEMA = 'deliveryDB'
-[2024-02-03T12:38:03.522] [DEBUG] log_none - Executing (default): SHOW INDEX FROM `users`
-[2024-02-03T12:38:26.156] [DEBUG] log_none - server on, now listening localhost:3000
-[2024-02-03T12:38:26.218] [DEBUG] log_none - Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'users' AND TABLE_SCHEMA = 'deliveryDB'
-[2024-02-03T12:38:26.221] [DEBUG] log_none - Executing (default): SHOW INDEX FROM `users`

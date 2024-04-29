@@ -1,1 +1,0 @@
-SELECT * FROM goods WHERE name='0';

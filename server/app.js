@@ -6,6 +6,7 @@
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
@@ -22,7 +23,22 @@ var http = require('http');
 var server = http.createServer(app);
 
 
-app.use(cors(corsOptions))
+//cookie
+app.use(cookieParser());
+//session
+app.use(session({
+  secret: 'xpxxy',
+  resave: true,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000*60*3 //session有效时间（会话有效时间3分钟）
+  },
+  rolling: true,//是否回滚
+  name: "session",
+}))
+
+
+app.use(cors(corsOptions));
 //body-parser中间件解析数据
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
