@@ -195,24 +195,24 @@ exports.findAllLogisticsInfo =  async ( req, res) =>{
  * @return {*} 返回所有表单头的信息地址数组
  * @requestType POST
  */
-exports.findAllLogisticAddr = async (req, res)=>{
-    FormInfo.findAll({attribute:"logisticsInfoAddr"}).then(data=>{
-        if(data.length != 0){
+exports.findAllLogisticAddr = async (req, res) => {
+    FormInfo.findAll({ attribute: "logisticsInfoAddr" }).then(data => {
+        if (data.length != 0) {
             res.status(200).send({
-                code:"200",
-                message:"ok!",
-                data:data,
+                code: "200",
+                message: "ok!",
+                data: data,
             })
         }
-        else{
+        else {
             res.status(201).send({
-                code:"201",
-                message:"ok, but table no data"
+                code: "201",
+                message: "ok, but table no data"
             })
         }
-    }).catch(err=>{
+    }).catch(err => {
         res.status(500).send({
-            code:"500",
+            code: "500",
             message:
                 err.message || "数据库出现问题，请检查console"
         })
@@ -227,7 +227,7 @@ exports.findAllLogisticAddr = async (req, res)=>{
  */
 exports.getFormData = async (req, res)=>{
     const searchAddr = req.body.formAddr
-    let formData=[];
+    let formData = [];
     try{
         let token = await webase.getUserToken();
         let resData = await webase.getFormInfo(token,searchAddr);
@@ -282,42 +282,42 @@ exports.getFormData = async (req, res)=>{
     
    
 };
-exports.getUserForm = async (req, res) =>{
+exports.getUserForm = async (req, res) => {
     const userAddr = req.body.userAddr;
     FormInfo.findAll({
         where: { receiverAddr: userAddr },
         include: [
-            { 
-                model: Form, 
+            {
+                model: Form,
                 attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
-            }, 
-            { 
-                model: Goods 
+            },
+            {
+                model: Goods
             }
         ],
-        order:[[{model:Form},'id','ASC']],
-        
-        
-    }).then(formInfoData=>{
-        if(formInfoData.length==0){
+        order: [[{ model: Form }, 'id', 'ASC']],
+
+
+    }).then(formInfoData => {
+        if (formInfoData.length == 0) {
             res.status(200).send({
-                code:"4001",
-                message:"没有"
+                code: "4001",
+                message: "没有"
             })
-        }else{
+        } else {
             //!注意深拷贝!!
             res.status(200).send({
-                code:"4000",
-                message:"ok!",
-                data:formDataProcess(formInfoData)
+                code: "4000",
+                message: "ok!",
+                data: formDataProcess(formInfoData)
             })
         }
-        
 
-    }).catch(err=>{
+
+    }).catch(err => {
         res.status(500).send({
-            code:"500",
-            message:err.message || "数据库报错！"
+            code: "500",
+            message: err.message || "数据库报错！"
         })
     })
 }
