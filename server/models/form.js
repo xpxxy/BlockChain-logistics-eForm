@@ -27,7 +27,7 @@ module.exports=( sequelize, Sequelize)=>{
         formAddr:{
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true,
+            
         },
         status:{
             type: Sequelize.ENUM('on','off','delete'),
@@ -37,15 +37,15 @@ module.exports=( sequelize, Sequelize)=>{
         },
     
     })
-    Form.belongsTo(FormInfo,{
-        foreignKey:{
-            name: "logisticsInfoID",
-            allowNull: false,
-        },
-        references:{
-            model: FormInfo,
-            key: 'id'
-        }
-    })
+    // Form.belongsTo(FormInfo,{
+    //     foreignKey:{
+    //         name: "logisticsInfoID",
+    //         allowNull: false,
+    //     },
+    //     references:{
+    //         model: FormInfo,
+    //         key: 'id'
+    //     }
+    // })
     return Form
 }

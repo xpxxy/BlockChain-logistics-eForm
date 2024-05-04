@@ -9,8 +9,8 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
 const cors = require('cors')
 var corsOptions = {
   origin:"http://localhost:8000"

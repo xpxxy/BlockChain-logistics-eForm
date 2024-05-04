@@ -99,8 +99,19 @@ exports.login= async (req,res)=>{
     const user = {
         phone:req.body.phone,
         pw:req.body.pw,
+        captcha: req.body.captcha.toLowerCase()
     }
-    console.log(req.body)
+    // console.log(req.body);
+    console.log(req.session)
+    if(user.captcha!==req.session.captcha.toLowerCase()){
+        res.status(200).send({
+            code:"2005",
+            message:"验证码错误！"
+        })
+
+        return;
+    }
+    // req.session.captcha;
     if(!user.phone){
         res.status(400).send({
             code:"2001",
@@ -163,6 +174,28 @@ exports.login= async (req,res)=>{
         })
     })
 };
+
+
+/**
+ * @description: 退出登录清除session
+ * @param {*} req 请求体
+ * @param {*} res 响应体
+ * @return {*}
+ * @requestType: post
+ */
+exports.logout = async (req, res) => {
+    req.session.destroy();
+    res.status(200).send({
+        code:"2006",
+        message:"退出成功！"
+    })
+}
+
+
+
+
+
+
 /**
  * @description: 修改用户的账户状态
  * @param {*} req 请求体 接受json {status:"用户的当前状态"，phone:"用户手机号"}
@@ -176,8 +209,10 @@ exports.changeStatus = async (req, res) => {
     //*       off represent on ->off
     const user = {
         status: req.body.status,
-        phone: req.body.phone
+        phone: req.body.phone,
     };
+
+
     if(user.status === 'on'){
         await User.update({ status: 'off' }, { where: { [Op.and]: [{ status: 'on' }, { phone: user.phone }] } }).then(data => {
             // console.log(data);
@@ -210,12 +245,14 @@ exports.changeStatus = async (req, res) => {
                     code: "200",
                     message: "修改成功！"
                 })
+                return;
             }
             else {
                 res.status(400).send({
                     code: '400',
                     message: "请勿重复修改！"
                 })
+                return;
             }
 
         }).catch(err => {
@@ -244,15 +281,17 @@ exports.changeStatus = async (req, res) => {
 exports.getCaptcha = async (req,res)=>{
     const captcha = svgCaptcha.create({
         size:4,
-        noise:5,
+        noise:4,
         fontSize:50,
         width:100,
-        height:30,
-        color:true
+        height:35,
+        color:false
     });
     req.session.captcha = captcha.text;
+    console.log(req.session)
     // res.type('svg')
     res.status(200).send({
         data:captcha.data
     })
+    return;
 }    

@@ -39,10 +39,27 @@ function aesEncrypt(text, passphrase) {
 function aesDecrypt(ciphertext, passphrase) {  
     var bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
     return bytes.toString(CryptoJS.enc.Utf8); 
+}
+function formDataProcess(data){
+    //!深拷贝，非常关键不可缺少!!!
+    const clonedData = JSON.parse(JSON.stringify(data));
+    clonedData.forEach(logisticsInfo => {
+        logisticsInfo.formAddr = logisticsInfo.forms[0].formAddr
+        const updatedForms = logisticsInfo.forms.map(form => ({
+            id: form.id,
+            transitAddr: form.transitAddr,
+            transitContact: form.transitContact,
+            transitAddrInfo: form.transitAddrInfo
+        }));
+        logisticsInfo.forms = updatedForms;
+        
+    });
+    return clonedData
 }  
 module.exports={
     uuid,
     addressToString,
     aesDecrypt,
-    aesEncrypt
+    aesEncrypt,
+    formDataProcess
 }

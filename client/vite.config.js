@@ -43,12 +43,12 @@ export default defineConfig({
     // open: '/index.html',
     // host:'localhost',
     port:'8000',
-    // proxy:{
-    //   "/api":{
-    //     target: "http://localhost:3000",
-    //     changeOrigin: true,
-    //     rewrite: path => path.replace(RegExp(`^api`), '')
-    //   },
-    // }
+    proxy:{
+      "/api":{
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        rewrite: path => path.replace(RegExp(`^api`), '')
+      },
+    }
   },
 })

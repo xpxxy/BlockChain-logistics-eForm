@@ -6,6 +6,8 @@ import "element-plus/theme-chalk/el-notification.css";
 import './style.css'
 import App from './App.vue'
 import router from './router'
+import axios from 'axios'
+axios.defaults.withCredentials=true;
 const app = createApp(App)
 app.use(router)
 // app.use(axios)

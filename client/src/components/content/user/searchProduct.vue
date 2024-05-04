@@ -9,6 +9,7 @@
                     <el-button type="primary" @click="search">搜索</el-button>
                     <el-button type="default" @click="clear">清除列表数据</el-button>
                 </el-col>
+                <el-col :span="24"><br/></el-col>
                 <el-col :span="24">
                     <el-table :data="tableData" style="width: 100%;" height="600px" stripe :border="true">
                         <el-table-column prop="name" label="商品名称" />
@@ -41,7 +42,7 @@ function search() {
     let content = {
         data:aesEncrypt(JSON.stringify(searchContent),'xpxxy')
     }
-    axios.post('http://localhost:3000/api/findOneGoods', content).then(res => {
+    axios.post('/api/findOneGoods', content).then(res => {
         if (res.data.code == '3000') {
             
             tableData.value.push(res.data.data)
@@ -52,6 +53,9 @@ function search() {
             ElMessage.info("未查询到您输入商品信息")
         }
     })
+}
+function clear(){
+    tableData.value = []
 }
 </script>
 <style scoped lang="less">

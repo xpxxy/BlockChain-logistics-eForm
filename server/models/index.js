@@ -28,5 +28,6 @@ db.user = require('./user.js')(sequelize,Sequelize);
 db.goods = require('./goods.js')(sequelize,Sequelize);
 db.formInfo = require('./formInfo.js')(sequelize, Sequelize);
 db.form = require('./form.js')(sequelize, Sequelize);
+db.formInfo.hasMany(db.form);
 
 module.exports= db

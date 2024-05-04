@@ -85,6 +85,7 @@ import { ref, reactive, onBeforeMount } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
 import { InfoFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus';
+import axios from 'axios'
 const router = useRouter()
 //用户信息
 const info = JSON.parse(aesDecrypt(localStorage.getItem('userSession'), 'xpxxy'))
@@ -110,9 +111,15 @@ const toMainPage = () => {
     router.push('/')
 }
 function quit() {
-    localStorage.removeItem('userSession')
-    ElMessage.success('退出登录成功！')
-    router.push('/')
+    axios.post('/api/logout').then(res=>{
+        if(res.data.code==='2006'){
+            localStorage.removeItem('userSession');
+            ElMessage.success('退出登录成功！');
+            router.push('/');
+            
+        }
+    })
+    
 }   
 </script>
 <style lang="less">

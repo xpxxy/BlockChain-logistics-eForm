@@ -5,6 +5,8 @@
 const db = require('../models');
 const webase = require('../config/WeBase');
 const axios = require('axios');
+const { Sequelize } = require('sequelize');
+const { formDataProcess } = require('../utils/utils');
 const FormInfo = db.formInfo;
 const Form = db.form;
 const Goods = db.goods;
@@ -279,7 +281,49 @@ exports.getFormData = async (req, res)=>{
     // }
     
    
+};
+exports.getUserForm = async (req, res) =>{
+    const userAddr = req.body.userAddr;
+    FormInfo.findAll({
+        where: { receiverAddr: userAddr },
+        include: [
+            { 
+                model: Form, 
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+            }, 
+            { 
+                model: Goods 
+            }
+        ],
+        order:[[{model:Form},'id','ASC']],
+        
+        
+    }).then(formInfoData=>{
+        if(formInfoData.length==0){
+            res.status(200).send({
+                code:"4001",
+                message:"没有"
+            })
+        }else{
+            //!注意深拷贝!!
+            res.status(200).send({
+                code:"4000",
+                message:"ok!",
+                data:formDataProcess(formInfoData)
+            })
+        }
+        
+
+    }).catch(err=>{
+        res.status(500).send({
+            code:"500",
+            message:err.message || "数据库报错！"
+        })
+    })
 }
+
+
+
 // exports.testFind = async (req, res)=>{
 //     const formAddr = req.body.formAddr
 //     try{

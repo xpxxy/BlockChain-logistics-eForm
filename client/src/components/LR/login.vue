@@ -121,7 +121,7 @@ const toMainPage=()=>{
     router.back('/')
 }
 const flushCaptcha=()=>{
-    axios.get("http://localhost:3000/api/captcha").then(res=>{
+    axios.get("/api/captcha").then(res=>{
         captcha.src = res.data.data
         // console.log(res.data);
     })
@@ -134,6 +134,7 @@ onBeforeMount(()=>{
 
 const fullscreenLoading = ref(false)
 function submit(){
+    //设置加载遮罩
     fullscreenLoading.value = true
     ruleFormRef.value.validate((valid) => {
         if(valid){
@@ -141,27 +142,38 @@ function submit(){
                 method: 'post',
                 headers: { "content-type": "application/json" },
                 data: ruleForm,
-                url: 'http://localhost:3000/api/login',
+                url: '/api/login',
             }
             axios(options).then(res => {
                 let data = res.data
                 if (data.code == '2000') {
-                    fullscreenLoading.value = false
-                    ElMessage.success("登陆成功！")
                     localStorage.setItem('userSession', data.data)
                     let info = JSON.parse(aesDecrypt(data.data,'xpxxy'))
-                    // console.log(info);
+                    // console.log(info)
+                    
                     if(info.role =='user'){
-                       router.push('/user') 
+                        fullscreenLoading.value = false
+                        ElMessage.success("登陆成功！") 
+                        router.push('/user') 
                     }
                     if(info.role == 'transit'){
+                        fullscreenLoading.value = false
+                        ElMessage.success("登陆成功！") 
                         router.push('/transit')
+                    }
+                    if(info.role == 'admin'){
+                        fullscreenLoading.value = false
+                        ElMessage.info("请管理员使用管理员登录，不要使用用户页面操作。")
                     }
                 }
                 if (data.code == '2002'){
                     fullscreenLoading.value = false
                     ElMessage.error("密码错误！")
                     
+                }
+                if(data.code == '2005'){
+                    fullscreenLoading.value = false
+                    ElMessage.error("验证码错误！")
                 }
             }).catch(err=>{
                 fullscreenLoading.value = false
@@ -220,7 +232,7 @@ const toRegister=()=>{
         justify-content: center;
 }
 .captchabox{
-    height: 30px;
+    height: 35px;
 }
 
 </style>
