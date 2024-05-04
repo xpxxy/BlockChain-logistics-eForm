@@ -22,6 +22,7 @@
             <el-table-column type="expand">
               <template #default="props">
                 <div class="expandCard">
+                  //应该使用descrition组件
                   <h3>表单头信息</h3>
                   <el-row :gutter="20">
                     <el-col :span="7">
