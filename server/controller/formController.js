@@ -328,7 +328,46 @@ exports.getUserForm = async (req, res) => {
         })
     })
 };
+exports.searchFormData = async(req, res)=>{
+    const searchData = req.body.searchData;
+    FormInfo.findAll({
+        where: { logisticsInfoAddr: searchData },
+        include: [
+            {
+                model: Form,
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+            },
+            {
+                model: Goods
+            }
+        ],
+        order: [[{ model: Form }, 'id', 'ASC']],
 
+
+    }).then(formInfoData => {
+        if (formInfoData.length == 0) {
+            res.status(200).send({
+                code: "4001",
+                message: "没有"
+            })
+        } else {
+            //!注意深拷贝!!
+            res.status(200).send({
+                code: "4000",
+                message: "ok!",
+                data: formDataProcess(formInfoData)
+            })
+        }
+
+
+    }).catch(err => {
+        res.status(500).send({
+            code: "500",
+            message: err.message || "数据库报错！"
+        })
+    })
+
+};
 
 
 // exports.testFind = async (req, res)=>{
