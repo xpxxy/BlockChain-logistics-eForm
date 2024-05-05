@@ -102,7 +102,7 @@ exports.login= async (req,res)=>{
         captcha: req.body.captcha.toLowerCase()
     }
     // console.log(req.body);
-    console.log(req.session)
+    // console.log(req.session)
     if(user.captcha!==req.session.captcha.toLowerCase()){
         res.status(200).send({
             code:"2005",
@@ -174,7 +174,78 @@ exports.login= async (req,res)=>{
         })
     })
 };
+exports.loginButnocaptcha= async (req,res)=>{
+    const user = {
+        phone:req.body.phone,
+        pw:req.body.pw,
+     
+    }
+    // console.log(req.body);
+    // console.log(req.session)
+   
+    // req.session.captcha;
+    if(!user.phone){
+        res.status(400).send({
+            code:"2001",
+            message: "用户的手机号不得为空！"
+        });
+        return;
+    }
+    if(!req.body.pw){
+         res.status(400).send({
+            code:"2001",
+            message: "用户的密码不得为空！"
+         });
+         return;
+    }
+    await User.findAll({
+        where: { phone: user.phone}
+    }).then(data =>{
+        //判断是否存在
+        if(data.length === 0){
+            res.status(200).send({
+                code:'2003',
+                message:"用户不存在",
+            })
+            return
+        }
+        else{
+            //判断是否停用
+            if (data[0].status === 'off') {
+                res.status(200).send({
+                    code: '2004',
+                    message: "登录失败,已停用的用户，请联系管理员",
+                })
+                return
+            }
+            //判断是否密码错误
+            if(data[0].pw === user.pw ){
+                let info = JSON.stringify(data[0])
+                console.log(info)
+                res.status(200).send({
+                    code: "2000",
+                    message: "登录成功！",
+                    data: utils.aesEncrypt(info, 'xpxxy')
 
+                })
+                return
+            }else{
+                res.status(200).send({
+                    code:"2002",
+                    message:"密码错误"
+                })
+            }
+        }
+    //一般是数据库出错        
+    }).catch(err =>{
+        console.log(err)
+        res.status(500).send({
+            code:"500",
+            message:"数据库出错",
+            data:err
+        })
+    })
+};
 
 /**
  * @description: 退出登录清除session

@@ -11,7 +11,7 @@
                 </el-col>
                 <el-col :span="24"><br/></el-col>
                 <el-col :span="24">
-                    <el-table :data="tableData" style="width: 100%;" height="600px" stripe :border="true">
+                    <el-table v-loading="loading" :data="tableData" style="width: 100%;" height="600px" stripe :border="true">
                         <el-table-column prop="name" label="商品名称" />
                         <el-table-column prop="productType" label="类别" />
                         <el-table-column prop="productionDate" label="生产日期" />
@@ -34,24 +34,31 @@ import axios from 'axios';
 import { aesDecrypt, aesEncrypt} from '../../../utils/utils';
 import { ElMessage } from 'element-plus';
 import { ref, watch, reactive } from 'vue';
+
 const searchContent = reactive({
     name: ""
 })
+const loading = ref(false)
 const tableData = ref([])
 function search() {
+    loading.value = true;
     let content = {
         data:aesEncrypt(JSON.stringify(searchContent),'xpxxy')
     }
     axios.post('/api/findOneGoods', content).then(res => {
         if (res.data.code == '3000') {
-            
+            loading.value = false;
             tableData.value.push(res.data.data)
             ElMessage.success("查询成功！")
             // console.log(tableData)
         }
         if(res.data.code == '3001'){
+            loading.value = false;
             ElMessage.info("未查询到您输入商品信息")
         }
+    }).catch(err=>{
+        loading.value = false;
+        ElMessage.error("出错了，请联系管理员")
     })
 }
 function clear(){

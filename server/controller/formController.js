@@ -6,7 +6,7 @@ const db = require('../models');
 const webase = require('../config/WeBase');
 const axios = require('axios');
 const { Sequelize } = require('sequelize');
-const { formDataProcess } = require('../utils/utils');
+const { formDataProcess, hidePhoneNumber } = require('../utils/utils');
 const FormInfo = db.formInfo;
 const Form = db.form;
 const Goods = db.goods;
@@ -329,9 +329,60 @@ exports.getUserForm = async (req, res) => {
     })
 };
 exports.searchFormData = async(req, res)=>{
-    const searchData = req.body.searchData;
+    const searchContent = {
+        searchData: req.body.searchData,
+        userAddr: req.body.userAddr
+    }
     FormInfo.findAll({
-        where: { logisticsInfoAddr: searchData },
+        where: { logisticsInfoAddr: searchContent.searchData },
+        include: [
+            {
+                model: Form,
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+            },
+            {
+                model: Goods
+            }
+        ],
+        order: [[{ model: Form }, 'id', 'ASC']],
+
+
+    }).then(formInfoData => {
+        if (formInfoData.length == 0) {
+            res.status(200).send({
+                code: "4001",
+                message: "没有"
+            })
+        } else {
+            if(formInfoData[0].receiverAddr!== searchContent.userAddr){
+                res.status(200).send({
+                    code: "4000",
+                    message:"ok!",
+                    data:hidePhoneNumber(formDataProcess(formInfoData))
+                })
+            }else{
+                res.status(200).send({
+                    code: "4000",
+                    message: "ok!",
+                    data: formDataProcess(formInfoData)
+                })
+            }
+           
+        }
+
+
+    }).catch(err => {
+        res.status(500).send({
+            code: "500",
+            message: err.message || "数据库报错！"
+        })
+    })
+
+};
+exports.getTransitForm = async (req, res) => {
+    const userAddr = req.body.userAddr;
+    FormInfo.findAll({
+        where: { senderAddr: userAddr },
         include: [
             {
                 model: Form,
@@ -366,9 +417,7 @@ exports.searchFormData = async(req, res)=>{
             message: err.message || "数据库报错！"
         })
     })
-
 };
-
 
 // exports.testFind = async (req, res)=>{
 //     const formAddr = req.body.formAddr

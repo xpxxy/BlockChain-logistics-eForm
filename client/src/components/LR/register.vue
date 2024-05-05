@@ -40,6 +40,15 @@
                             </template>
                         </el-input>
                     </el-form-item>
+                    <el-form-item label="您的姓名" prop="name">
+                        <el-input id="name" placeholder="请输入您的姓名" v-model="ruleForm.name">
+                            <template #prefix>
+                                <el-icon class="el-input__icon">
+                                    <i-ep-User />
+                                </el-icon>
+                            </template>
+                        </el-input>
+                    </el-form-item>
                     <el-form-item label="您的手机号" prop="phone">
                         <el-input id="phone" placeholder="请输入您的手机号" v-model="ruleForm.phone">
                             <template #prefix>
@@ -101,6 +110,7 @@ const fullscreenLoading = ref(false)
 const ruleForm = reactive({
     userID:'',
     phone:'',
+    name:'',
     pw:'',
     role:''
 })
@@ -109,12 +119,15 @@ const rules = reactive({
     userID:[
         { required:true, message:'请输入您的用户名,长度在2-20位之间', trigger: "blur" },
         { min:2, max:20, message:"您的用户名长度应为2-20位之间", trigger:"blur"},
-        { pattern: /^[a-zA-Z0-9_-]{2,20}$/, message:"非法的用户名，请不要输入除_-以外的字符", trigger:"blur"}  
+        { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,20}$/, message:"非法的用户名，请不要输入除_-以外的字符", trigger:"blur"}  
     ],
     phone:[
         { required: true, message: "请输入手机号", trigger: 'blur' },
         { pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/, message: "请输入正确的手机号", trigger: 'blur'},
         { len:11, message:"请输入正确的手机号", trigger: 'blur'}
+    ],
+    name:[
+        {min:2, max:20, message:"您的姓名未输入正确", trigger: 'blur'}
     ],
     pw:[
         { required: true, message:"请输入密码", trigger:'blur' },
@@ -147,11 +160,11 @@ function submit(){
                 method: 'post',
                 headers: { "content-type": "application/json" },
                 data: ruleForm,
-                url: 'http://localhost:3000/api/adduser',
+                url: '/api/adduser',
                 // timeout: 5000
             }
             
-            console.log(options)
+            // console.log(options)
             //等待注册接口
             await axios(options).then(async res => {
                 let data = res.data
@@ -160,12 +173,12 @@ function submit(){
                     fullscreenLoading.value = false
                     //弹出提示
                     ElMessage.success("注册成功！即将前往个人中心")
-                    await axios.post('http://localhost:3000/api/login',{"phone":ruleForm.phone,"pw":ruleForm.pw}).then(response=>{
+                    await axios.post('/api/loginNoCaptcha',{"phone":ruleForm.phone,"pw":ruleForm.pw}).then(response=>{
                         if(response.data.code=='1000'){
                             localStorage.setItem('userSession', response.data.data )
-                            setTimeout(() => {
-                                router.push('/user')
-                            }, 2000)
+                            
+                            router.push('/user')
+                            
                         }
                     })
                     
@@ -204,7 +217,7 @@ function submit(){
 .content{
   display: flex;
   width: 50%;
-  height: 400px;
+  height: 500px;
   margin-left: 25%;
   margin-top: 5%;
   align-items: flex-start;

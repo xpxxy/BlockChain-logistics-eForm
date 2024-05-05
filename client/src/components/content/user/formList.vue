@@ -116,7 +116,7 @@
                           <el-icon>
                             <i-ep-Tickets />
                           </el-icon>
-                          表单区块链地址
+                          中转信息区块链地址
                         </div>
                       </template>
                       {{ props.row.formAddr }}
@@ -158,7 +158,7 @@
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
-                            <i-ep-Box />
+                            <i-ep-Calendar />
                           </el-icon>
                           商品生产日期
                         </div>
@@ -170,7 +170,7 @@
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
-                            <i-ep-Box />
+                            <i-ep-Calendar />
                           </el-icon>
                           商品保质期至
                         </div>
@@ -182,7 +182,7 @@
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
-                            <i-ep-Box />
+                            <i-ep-Memo />
                           </el-icon>
                           商品类别
                         </div>
@@ -194,7 +194,7 @@
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
-                            <i-ep-Box />
+                            <i-ep-Postcard />
                           </el-icon>
                           商品条码
                         </div>
@@ -227,9 +227,10 @@
               </template>
             </el-table-column>
             <el-table-column prop="id" label="表单序号" />
-            <el-table-column prop="logisticsInfoAddr" label="表单头地址" />
-            <el-table-column prop="formAddr" label="表单地址" />
-            <el-table-column prop="receiverAddr" label="收件人地址" />
+            <el-table-column prop="logisticsInfoAddr" label="表单头区块链地址" />
+            <el-table-column prop="formAddr" label="中转方区块链地址" />
+            <el-table-column prop="receiverAddr" label="收件人区块链地址" />
+            <el-table-column prop="productAddr" label="商品区块链地址" />
           </el-table>
         </el-col>
       </el-row>
@@ -246,6 +247,7 @@ import axios from "axios";
 import { aesDecrypt, aesEncrypt } from "@/utils/utils";
 import { ElMessage } from "element-plus";
 import { ref, reactive, onMounted } from "vue";
+
 
 const emptyText = ref("");
 const empty = ref(false);
@@ -267,6 +269,9 @@ onMounted(() => {
       tableData.value = res.data.data;
       loading.value = false;
     }
+  }).catch(err=>{
+    loading.value = false;
+    ElMessage.error("超时")
   });
 });
 </script>
@@ -275,13 +280,13 @@ onMounted(() => {
   padding: 0.3%;
 }
 .expandCard {
-  padding: 2%;
+  padding: 1%;
 }
-p {
-  // font-family:'Resource Han Rounded CN Normal';
-  font-size: 14px;
-  // font-weight: bold;
-}
+// p {
+//   // font-family:'Resource Han Rounded CN Normal';
+//   font-size: 14px;
+//   // font-weight: bold;
+// }
 h3 {
   display: inline-block;
 }

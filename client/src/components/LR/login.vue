@@ -209,7 +209,7 @@ const toRegister=()=>{
 .content{
   display: flex;
   width: 50%;
-  height: 400px;
+  height: 500px;
   margin-left: 25%;
   margin-top: 5%;
   align-items: center;
