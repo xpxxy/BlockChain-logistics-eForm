@@ -56,6 +56,7 @@ function search() {
 }
 function clear(){
     tableData.value = []
+    ElMessage.success("清除成功！")
 }
 </script>
 <style scoped lang="less">

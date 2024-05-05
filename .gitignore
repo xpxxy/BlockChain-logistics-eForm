@@ -11,8 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-UML
-
+UML/*
+/test.js
+/tempCodeRunnerFile.js
+/test.html
 
 # Editor directories and files
 .vscode/*

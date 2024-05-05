@@ -31,7 +31,7 @@
         </el-menu>
     </div>
     <div class="content">
-        <el-row style="height: 100%">
+        <el-row style="height:90%">
             <el-col :span="3">
                 <div class="navtitle">
                     业务中心

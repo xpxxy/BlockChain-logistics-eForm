@@ -282,6 +282,13 @@ exports.getFormData = async (req, res)=>{
     
    
 };
+/**
+ * @description: 获取用户的表单信息
+ * @param {*} req 请求体
+ * @param {*} res 响应体
+ * @return {*} 返回一个数组 格式：[{..., [],...},{..., [], ...}...]
+ * @requestType: 
+ */
 exports.getUserForm = async (req, res) => {
     const userAddr = req.body.userAddr;
     FormInfo.findAll({
@@ -320,7 +327,7 @@ exports.getUserForm = async (req, res) => {
             message: err.message || "数据库报错！"
         })
     })
-}
+};
 
 
 

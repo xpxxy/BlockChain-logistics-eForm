@@ -101,5 +101,13 @@ function formDataProcess(clonedData){
         
     
 }  
-
+function hidePhoneNumber(data){
+    const clonedData = JSON.parse(JSON.stringify(data));
+    clonedData.forEach(logisticsInfo => {
+        //*最原始的方法。。。。XD
+        logisticsInfo.senderContact = logisticsInfo.senderContact.replace(/(\d{3})(\d{4})(\d{4})/,"$1****$3")
+        logisticsInfo.receiverContact = logisticsInfo.receiverContact.replace(/(\d{3})(\d{4})(\d{4})/,"$1****$3")
+    })
+    return clonedData;
+}
 console.log(formDataProcess(data));

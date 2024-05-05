@@ -12,7 +12,7 @@
             v-loading="loading"
             :data="tableData"
             style="width: 100%"
-            height="600px"
+            height="750px"
             stripe
             :border="true"
           >
@@ -22,36 +22,196 @@
             <el-table-column type="expand">
               <template #default="props">
                 <div class="expandCard">
-                  //应该使用descrition组件
-                  <h3>表单头信息</h3>
-                  <el-row :gutter="20">
-                    <el-col :span="7">
-                      <p>发件人区块链地址：{{ props.row.senderAddr }}</p>
-                      <p>发件人联系方式：{{ props.row.senderContact }}</p>
-                      <p>发件地址：{{ props.row.senderAddressInfo }}</p>
-                      <p>承运公司：{{ props.row.logisticsCompanyName }}</p>
-                    </el-col>
-                    <el-divider direction='vertical'/>
-                    <el-col :span="7">
-                      <p>收件人区块链地址：{{ props.row.receiverAddr }}</p>
-                      <p>收件人件人联系方式：{{ props.row.receiverContact }}</p>
-                      <p>收件地址：{{ props.row.receiverAddressInfo }}</p>
-                    </el-col>
-                    <el-col :span="7">
-                      <p>表单头区块链地址：{{ props.row.logisticsInfoAddr }}</p>
-                      <p>表单区块链地址：{{ props.row.formAddr }}</p>
-                      <p>商品区块链地址：{{ props.row.productAddr }}</p>
-                    </el-col>
-                  </el-row>
+                  <el-tooltip
+                    class="box-item"
+                    effect="dark"
+                    content="这里是电子表单的信息头"
+                    placement="right"
+                  >
+                    <h3>表单头信息</h3>
+                  </el-tooltip>
+                  <el-descriptions :column="3" border>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-UserFilled />
+                          </el-icon>
+                          收件人区块链地址
+                        </div>
+                      </template>
+                      {{ props.row.receiverAddr }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Iphone />
+                          </el-icon>
+                          收件人联系方式
+                        </div>
+                      </template>
+                      {{ props.row.receiverContact }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-LocationFilled />
+                          </el-icon>
+                          收货地址
+                        </div>
+                      </template>
+                      {{ props.row.receiverAddressInfo }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Van />
+                          </el-icon>
+                          发件人区块链地址
+                        </div>
+                      </template>
+                      {{ props.row.senderAddr }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Cellphone />
+                          </el-icon>
+                          发件人联系方式
+                        </div>
+                      </template>
+                      {{ props.row.senderContact }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Office-building />
+                          </el-icon>
+                          发货地址
+                        </div>
+                      </template>
+                      {{ props.row.senderAddressInfo }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Coin />
+                          </el-icon>
+                          表单头区块链地址
+                        </div>
+                      </template>
+                      {{ props.row.logisticsInfoAddr }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Tickets />
+                          </el-icon>
+                          表单区块链地址
+                        </div>
+                      </template>
+                      {{ props.row.formAddr }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品信息区块链地址
+                        </div>
+                      </template>
+                      {{ props.row.productAddr }}
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-tooltip
+                    class="box-item"
+                    effect="dark"
+                    content="这里是商品信息详情"
+                    placement="right"
+                  >
+                    <h3>商品基本信息</h3>
+                  </el-tooltip>
+                  <el-descriptions :column="5" border direction="vertical">
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品名称信息
+                        </div>
+                      </template>
+                      {{ props.row.good.name }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品生产日期
+                        </div>
+                      </template>
+                      {{ props.row.good.productionDate }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品保质期至
+                        </div>
+                      </template>
+                      {{ props.row.good.expirationDate }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品类别
+                        </div>
+                      </template>
+                      {{ props.row.good.productType }}
+                    </el-descriptions-item>
+
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Box />
+                          </el-icon>
+                          商品条码
+                        </div>
+                      </template>
+                      {{ props.row.good.barcode }}
+                    </el-descriptions-item>
+                  </el-descriptions>
+
                   <el-tooltip
                     class="box-item"
                     effect="dark"
                     content="这里是中转方的信息列表，自上到下为中转经过的实际顺序"
                     placement="right"
                   >
-                  <h3>中转方溯源信息</h3>
+                    <h3>中转方溯源信息</h3>
                   </el-tooltip>
-                  
+
                   <el-table :data="props.row.forms" :border="true">
                     <el-table-column
                       label="中转方区块链地址"
@@ -73,6 +233,11 @@
           </el-table>
         </el-col>
       </el-row>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="tableData.length"
+      />
     </el-card>
   </div>
 </template>
@@ -91,7 +256,7 @@ const info = JSON.parse(
 const loading = ref(true);
 const tableData = ref([]);
 onMounted(() => {
-  axios.post("/api/getUserForm", { userAddr: "0x123" }).then((res) => {
+  axios.post("/api/getUserForm", { userAddr: info.address }).then((res) => {
     if (res.data.code == "4001") {
       ElMessage.info("暂时没有表单数据");
       emptyText.value = "暂无数据";
@@ -117,7 +282,7 @@ p {
   font-size: 14px;
   // font-weight: bold;
 }
-h3{
+h3 {
   display: inline-block;
 }
 </style>
