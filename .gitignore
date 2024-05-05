@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-UML/*
+UML/
 /test.js
 /tempCodeRunnerFile.js
 /test.html
@@ -26,4 +26,5 @@ UML/*
 *.njsproj
 *.sln
 *.sw?
-test.js
+
+/test.js
