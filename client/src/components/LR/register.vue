@@ -6,9 +6,7 @@
                     <img style="width: 60px" src="../../assets/logo.png" alt="Delivery logo" />
                     <div class="mainTitle">区块链物流表单系统</div>
                 </el-menu-item>
-
                 <div class="flex-grow" />
-
                 <el-menu-item index="1" @click="toMainPage">
                     <el-icon>
                         <!-- icon需要这样引入 -->
@@ -155,16 +153,16 @@ function submit(){
     //验证的回调函数
     ruleFormRef.value.validate(async (valid) => {
         if(valid){
-            
-            var options = {
-                method: 'post',
-                headers: { "content-type": "application/json" },
-                data: ruleForm,
-                url: '/api/adduser',
-                // timeout: 5000
-            }
-            
-            // console.log(options)
+
+          const options = {
+            method: 'post',
+            headers: {"content-type": "application/json"},
+            data: ruleForm,
+            url: '/api/adduser',
+            // timeout: 5000
+          };
+
+          // console.log(options)
             //等待注册接口
             await axios(options).then(async res => {
                 let data = res.data
@@ -222,8 +220,7 @@ function submit(){
   margin-top: 5%;
   align-items: flex-start;
   justify-content: center;
-  border: solid 2px;
-  border-color: antiquewhite;
+  border: 2px solid antiquewhite;
   border-radius: 8px;
   backdrop-filter: blur(60px);
   padding-top:0px;

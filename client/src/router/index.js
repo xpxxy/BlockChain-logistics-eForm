@@ -1,22 +1,20 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
-import { aesDecrypt, aesEncrypt } from "@/utils/utils";
+import { aesDecrypt} from "@/utils/utils";
 import home from '../components/home.vue';
-const info = JSON.parse(
-    aesDecrypt(localStorage.getItem("userSession"), "xpxxy")
-  );
+import {ElMessage} from "element-plus";
 const userMenu = [
-    { path: '/user/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/user/info', title: '我的信息', icon: IconEpDocument }, { path: '/user/changeinfo', title: '修改个人信息', icon: IconEpEdit}], },
-    { path: '/user/form', title: "运单信息", icon:IconEpTickets, submenu: [{ path: '/user/formlist', title: '我的运单', icon:IconEpFiles }, { path: '/user/searchform', title: '查询运单', icon:IconEpSearch }] },
+    { path: '/user/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/user/info', title: '我的信息', icon: IconEpDocument }, { path: '/user/changeinfo', title: '修改个人信息', icon: IconEpEdit }], },
+    { path: '/user/form', title: "运单信息", icon: IconEpTickets, submenu: [{ path: '/user/formlist', title: '我的运单', icon: IconEpFiles }, { path: '/user/searchform', title: '查询运单', icon: IconEpSearch }] },
     { path: '/user/searchProduct', title: '商品查询', icon: IconEpSearch, submenu: [] }
 ];
 const transitMenu = [
-    { path: '/transit/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/transit/info', title: '我的信息', icon: IconEpDocument }, { path: '/transit/changeinfo', title: '修改个人信息', icon: IconEpEdit}] },
-    { path: '/transit/form', title:"运单信息", icon: IconEpTickets, submenu:[{path:'/transit/formList', title: '我的运单', icon:IconEpFiles},]}
+    { path: '/transit/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/transit/info', title: '我的信息', icon: IconEpDocument }, { path: '/transit/changeinfo', title: '修改个人信息', icon: IconEpEdit }] },
+    { path: '/transit/form', title: "运单信息", icon: IconEpTickets, submenu: [{ path: '/transit/formList', title: '我的运单', icon: IconEpFiles }, {path: '/transit/createform', title: '创建表单', icon: IconEpEdit },]}
 ];
 const router = createRouter({
     history: createWebHistory(),
-    routes:[
+    routes: [
         {
             path: '/',
             name: 'home',
@@ -25,93 +23,102 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component:()=>import('../components/LR/login.vue')
+            component: () => import('../components/LR/login.vue')
         },
         {
             path: '/register',
             name: 'register',
-            component:()=>import('../components/LR/register.vue')
+            component: () => import('../components/LR/register.vue')
         },
         {
             path: '/user',
             name: 'user',
-            meta: { needLogin: true, menu:userMenu ,role:'user'},
-            redirect:"/user/info",
+            meta: { needLogin: true, menu: userMenu, role: 'user' },
+            redirect: "/user/info",
             component: () => import('../components/content/index.vue'),
             children: [
                 {
                     path: 'info',
                     name: 'userInfo',
-                    component: ()=> import('../components/content/user/userInfo.vue'),
-                    
+                    component: () => import('../components/content/user/userInfo.vue'),
+
                 },
                 {
                     path: 'changeinfo',
                     name: 'changeinfo',
-                    component: ()=> import('../components/content/user/changeInfo.vue'),
+                    component: () => import('../components/content/user/changeInfo.vue'),
                 },
                 {
                     path: 'formlist',
                     name: 'formlist',
-                    component: ()=> import('../components/content/user/formList.vue'),
+                    component: () => import('../components/content/user/formList.vue'),
                 },
                 {
                     path: 'searchform',
                     name: 'searchform',
-                    component: ()=> import('../components/content/user/searchForm.vue'),
+                    component: () => import('../components/content/user/searchForm.vue'),
                 },
                 {
                     path: 'searchProduct',
                     name: 'searchProduct',
-                    component: ()=> import('../components/content/user/searchProduct.vue'),
+                    component: () => import('../components/content/user/searchProduct.vue'),
                 }
             ]
         },
         {
-            path:'/transit',
-            name:'transit',
-            meta:{needLogin:true, menu:transitMenu, role:'transit'},
-            component: ()=> import('../components/content/index.vue'),
-            children:[
+            path: '/transit',
+            name: 'transit',
+            meta: { needLogin: true, menu: transitMenu, role: 'transit' },
+            component: () => import('../components/content/index.vue'),
+            children: [
                 {
                     path: 'info',
                     name: 'transitInfo',
-                    component: ()=>import('../components/content/transit/TransitInfo.vue'),
+                    component: () => import('../components/content/transit/TransitInfo.vue'),
                 },
                 {
                     path: 'changeinfo',
                     name: 'changeinfo',
-                    component:()=>import('../components/content/transit/TransitChangeinfo.vue')
+                    component: () => import('../components/content/transit/TransitChangeinfo.vue')
                 },
                 {
                     path: 'formlist',
                     name: 'transitFormList',
-                    component:()=>import('../components/content/transit/TransitFormList.vue')
+                    component: () => import('../components/content/transit/TransitFormList.vue')
+                },
+                {
+                    path: 'createform',
+                    name: 'createForm',
+                    component: () => import('../components/content/transit/createForm.vue'),
                 }
             ]
         }
     ]
 })
-router.beforeEach((to, from, next)=>{
-    let userSeesion = localStorage.getItem("userSession");
-    if(to.matched.some(item=>item.meta.needLogin)){
-        if(userSeesion && info.role == to.meta.role){
-            next();
-            return;
-        }
-        alert("请登录！");
-        if(!userSeesion && to.name === 'login'){
-            next();
-        }
-        if(!userSeesion && to.name !== 'login'){
-            next({name: 'login'});
-        }
-        if(userSeesion && info.role!==to.meta.role){
-            next({name: 'login'});
-        }
-    }else{
-        next();
+router.beforeEach((to, from, next) => {
+    let userSession = localStorage.getItem("userSession");
+    let info = '';
+    if(userSession){
+        info = JSON.parse(
+            aesDecrypt(localStorage.getItem("userSession"), "xpxxy")
+        );
     }
+    if (to.matched.some(item => item.meta.needLogin)) {
+        if(!userSession){
+            ElMessage.info("请先登录！");
+            next({path: '/login'});
+
+        }
+        if(userSession && info.role && info.role !== to.meta.role){
+            console.log(info.role, to.meta.role);
+            // alert("你当前无权访问")
+            // console.log(from.path);
+            ElMessage.info("你当前无权访问其他组别的页面")
+            next({path: '/login'});
+            return
+        }
+    }
+    next()
 })
 
 export default router
