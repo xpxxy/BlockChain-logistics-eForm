@@ -255,7 +255,7 @@ async function createLogisticsInfo(token, data){
  * @requestType POST
  */
 async function createLogisticsForm(token,data){
-    var options = {
+    const options = {
         method:"post",
         url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
@@ -265,7 +265,7 @@ async function createLogisticsForm(token,data){
                 "user": xpxxy,//传入的交易用户
                 "contractName": "LogisticsForm",//调用的合约名
                 "funcName": "createLogisticsForm",//调用的合约方法
-                "funcParam": [data.logisticsInfoAddr, data.transitAddr, data.transitContact],
+                "funcParam": [data.logisticsInfoAddr, data.transitAddr, data.transitContact,data.transitAddrInfo],
                 "contractAbi": contractAbi,
                 "contractId": contractID,
                 "contractAddress": contractAddr,//合约地址
@@ -321,7 +321,7 @@ async function getLogisticsInfo(token,data){
  * @requestType POST
  */
 async function getLogisticsForm(token,data){
-    var options = {
+    const options = {
         method:'post',
         url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
         headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},

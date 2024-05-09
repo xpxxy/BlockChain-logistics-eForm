@@ -5,7 +5,7 @@
 module.exports = app =>{
     const formRouter = require("../controller/formController.js");
     var router = require("express").Router();
-    router.post("/api/createLogisticsInfo", formRouter.createLogisticsInfo);
+    router.post("/api/createForm", formRouter.createForm);
     router.get("/api/findOneLogisticsInfo", formRouter.findOneLogisticsInfo);
     router.get("/api/findAllLogisticsInfo", formRouter.findAllLogisticsInfo);
     router.get("/api/findForm",formRouter.getFormData);

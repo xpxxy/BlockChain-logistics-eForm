@@ -5,7 +5,7 @@
 const db = require('../models');
 const webase = require('../config/WeBase');
 const axios = require('axios');
-const { Sequelize } = require('sequelize');
+const { Sequelize, where } = require('sequelize');
 const { formDataProcess, hidePhoneNumber } = require('../utils/utils');
 const FormInfo = db.formInfo;
 const Form = db.form;
@@ -64,7 +64,7 @@ exports.findOneLogisticsInfo = async (req, res) => {
  * @return {*} 返回表单头的地址
  * @requestType POST
  */
-exports.createLogisticsInfo = async (req, res) => {
+exports.createForm = async (req, res) => {
     const logisticsInfo = {
         senderAddr: req.body.senderAddr,
         logisticsCompanyName: req.body.logisticsCompanyName,
@@ -74,33 +74,36 @@ exports.createLogisticsInfo = async (req, res) => {
         receiverAddressInfo: req.body.receiverAddressInfo,
         receiverContact: req.body.receiverContact,
         productAddr: req.body.productAddr,
-        logisticsInfoAddr: '',
-        
+        logisticsInfoAddr: "",
+
     };
+    const formData = {
+        logisticsInfoAddr:"",
+        formAddr:"",
+        transitAddr:req.body.senderAddr,
+        transitContact: req.body.senderContact,
+        transitAddrInfo: req.body.senderAddressInfo,
+        formInfoId:''
+    }
     try{
         let token = await webase.getUserToken();
-        let address = await webase.createLogisticsInfo(token,logisticsInfo);
-        logisticsInfo.logisticsInfoAddr = address;
+        let infoAddress = await webase.createLogisticsInfo(token,logisticsInfo);
+        logisticsInfo.logisticsInfoAddr = infoAddress;
+        formData.logisticsInfoAddr = infoAddress;
+        let formAddress = await webase.createLogisticsForm(token, formData);
+        formData.formAddr = formAddress;
     }catch(error){
         console.error("webase操作超时");
         return;
         
     };
-    FormInfo.create(logisticsInfo,{include:[Goods]}).then(data =>{
+    await FormInfo.create(logisticsInfo,{include:[Goods]}).then(data =>{
         if(!logisticsInfo.logisticsInfoAddr){
             res.status(400).send({
                 code:"400",
                 message:"插入的表头地址为空，请检查webase连接"
             })
-            return
-        }
-        else{
-            res.status(200).send({
-                code:"200",
-                message:"ok!",
-                data:data
-            })
-            return
+            
         }
     }).catch(err=>{
         res.status(500).send({
@@ -109,51 +112,73 @@ exports.createLogisticsInfo = async (req, res) => {
         })
         return
     })
-};
-exports.createForm = async (req, res) =>{
-    const form = {
-        logisticsInfoAddr: req.body.logisticsInfoAddr,
-        transitAddr: req.body.transitAddr,
-        transitContact: req.body.transitContact,
-        transitAddrInfo: req.body.transitAddrInfo,
-        logisticsInfoID:"",
-        status:req.body.status,
-        formAddr:"",
-    }
-    try{
-        let token = await webase.getUserToken();
-        let formAddr = await webase.createLogisticsForm(token, form)
-        form.formAddr = formAddr;
-    }
-    catch(error){
-        console.error("获取数据时出错"+error.message);
-
-    }
-    if(!form.formAddr){
-        res.status(400).send({
-            code:"400",
-            message:"formAddr为空，请检查连接!"
-        })
-        return
-    }
-    FormInfo.findOne({attribute:["logisticsInfoID","logisticsInfoAddr"],where:{logisticsInfoAddr:form.logisticsInfoAddr}})
-    Form.create(form,{include:{where}}).then(data=>{
-        if(data.length !=0){
-            res.status(200).send({
-                code:"200",
-                message:"ok!",
-                data:data
+    FormInfo.findOne({
+        attributes:['id'],where:{logisticsInfoAddr:logisticsInfo.logisticsInfoAddr}
+    }).then(data=>{
+        if(!data){
+            res.status(500).send({
+                code:"500",
+                message:"竞争冒险，id虽然被插入但来不及被下面的函数捕获"
             })
+        }else{
+            console.log(data.id)
+            formData.formInfoId = data.id;
+            Form.create(formData).then(result =>{
+                res.status(200).send({
+                    data:result
+                })
+            })
+            
         }
-    }).catch(err=>{
-        res.status(500).send({
-            code:"500",
-            message:
-                err.message || "数据库错误，检查console"
-        })
     })
+    
+    
+};
+// exports.createForm = async (req, res) =>{
+//     const form = {
+//         logisticsInfoAddr: req.body.logisticsInfoAddr,
+//         transitAddr: req.body.transitAddr,
+//         transitContact: req.body.transitContact,
+//         transitAddrInfo: req.body.transitAddrInfo,
+//         logisticsInfoID:"",
+//         status:req.body.status,
+//         formAddr:req.body.formAddr,
 
-}
+//     }
+//     // try{
+//     //     let token = await webase.getUserToken();
+//     //     let formAddr = await webase.createLogisticsForm(token, form)
+//     //     form.formAddr = formAddr;
+//     // }
+//     // catch(error){
+//     //     console.error("获取数据时出错"+error.message);
+
+//     // }
+//     if(!form.formAddr){
+//         res.status(400).send({
+//             code:"400",
+//             message:"formAddr为空，请检查连接!"
+//         })
+//         return
+//     }
+//     FormInfo.findOne({attribute:["logisticsInfoID","logisticsInfoAddr"],where:{logisticsInfoAddr:form.logisticsInfoAddr}})
+//     Form.create(form,{include:{where}}).then(data=>{
+//         if(data.length !=0){
+//             res.status(200).send({
+//                 code:"200",
+//                 message:"ok!",
+//                 data:data
+//             })
+//         }
+//     }).catch(err=>{
+//         res.status(500).send({
+//             code:"500",
+//             message:
+//                 err.message || "数据库错误，检查console"
+//         })
+//     })
+
+// }
 
 /**
  * @description: 查找所有的表单头信息
