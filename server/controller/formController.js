@@ -5,8 +5,8 @@
 const db = require('../models');
 const webase = require('../config/WeBase');
 const axios = require('axios');
-const { Sequelize, where } = require('sequelize');
-const { formDataProcess, hidePhoneNumber } = require('../utils/utils');
+// const { Sequelize } = require('sequelize');
+const { formDataArrayProcess, hidePhoneNumber,formDataObjProcess } = require('../utils/utils');
 const FormInfo = db.formInfo;
 const Form = db.form;
 const Goods = db.goods;
@@ -58,8 +58,8 @@ exports.findOneLogisticsInfo = async (req, res) => {
 
 };
 /**
- * @description: 创建表单头
- * @param {*} req 请求体
+ * @description: 创建表单
+ * @param {*} req 请求体 一个object
  * @param {*} res 响应体
  * @return {*} 返回表单头的地址
  * @requestType POST
@@ -68,21 +68,22 @@ exports.createForm = async (req, res) => {
     const logisticsInfo = {
         senderAddr: req.body.senderAddr,
         logisticsCompanyName: req.body.logisticsCompanyName,
-        senderAddressInfo: req.body.senderAddressInfo,
+        senderAddressInfo: req.body.senderAddrInfo,
         senderContact: req.body.senderContact,
         receiverAddr: req.body.receiverAddr,
-        receiverAddressInfo: req.body.receiverAddressInfo,
+        receiverAddressInfo: req.body.receiverAddrInfo,
         receiverContact: req.body.receiverContact,
         productAddr: req.body.productAddr,
         logisticsInfoAddr: "",
 
     };
+    console.log(logisticsInfo)
     const formData = {
         logisticsInfoAddr:"",
         formAddr:"",
         transitAddr:req.body.senderAddr,
         transitContact: req.body.senderContact,
-        transitAddrInfo: req.body.senderAddressInfo,
+        transitAddrInfo: req.body.senderAddrInfo,
         formInfoId:''
     }
     try{
@@ -125,9 +126,19 @@ exports.createForm = async (req, res) => {
             formData.formInfoId = data.id;
             Form.create(formData).then(result =>{
                 res.status(200).send({
-                    data:result
+                    code:'4000',
+                    message:'创建成功！'
                 })
+                return
+            }).catch(err=>{
+                res.status(500).send({
+                    code: "500",
+                    message: "数据插入出现异常！"
+                })
+                return
             })
+                
+            
             
         }
     })
@@ -321,7 +332,7 @@ exports.getUserForm = async (req, res) => {
         include: [
             {
                 model: Form,
-                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr', 'createdAt'],
             },
             {
                 model: Goods
@@ -341,7 +352,7 @@ exports.getUserForm = async (req, res) => {
             res.status(200).send({
                 code: "4000",
                 message: "ok!",
-                data: formDataProcess(formInfoData)
+                data: formDataArrayProcess(formInfoData)
             })
         }
 
@@ -353,6 +364,69 @@ exports.getUserForm = async (req, res) => {
         })
     })
 };
+exports.getAttendForm = async (req, res) => {
+    const Addr = req.body.address;
+    const promises = [];
+    //先从form表查询是否有中转的记录
+    await Form.findAll({
+        attributes:['logisticsInfoAddr'],
+        distinct: ['logisticsInfoAddr'],
+        where:{transitAddr:Addr}
+    }).then(result=>{
+        // console.log(result)
+        //查询出存在中转数据则获得forminfoAddr去查formInfo执行联合查询
+        if(!result){
+          res.status(200).send({
+            code:"4001",
+            message:"没有中转数据"
+          })
+        }else{
+            result.forEach( form => {
+                promises.push(
+                    FormInfo.findOne({
+                        where: { logisticsInfoAddr: form.logisticsInfoAddr },
+                        include: [
+                            {
+                                model: Form,
+                                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr', 'createdAt'],
+                            },
+                            {
+                                model: Goods
+                            }
+                        ],
+                        order: [[{ model: Form }, 'id', 'ASC']],
+                    }).then(formInfoData => formDataObjProcess(formInfoData))
+                    
+                );
+            });
+            Promise.all(promises).then(FinalResult=>{
+                res.status(200).send({
+                    code:'4000',
+                    data:FinalResult
+                });
+            }).catch(err=>{
+                res.status(500).send({
+                    code:"500",
+                    message:err.message|| "服务器内部错误"
+                });
+            });
+        }
+    }).catch(err=>{
+        res.status(500).send({
+            code:"500",
+            message:"查询form数据发生错误！",
+            error:err.message
+        })
+    })
+    
+};
+/**
+ * @description: 通过表单地址搜索表单信息，接受一个表单的地址和搜索的用户，若所搜索的表单不是用户相关的则手机号等信息将被处理打码
+ * @param {*} req 
+ * @param {*} res
+ * @return {*}
+ * @requestType: 
+ */
 exports.searchFormData = async(req, res)=>{
     const searchContent = {
         searchData: req.body.searchData,
@@ -363,7 +437,7 @@ exports.searchFormData = async(req, res)=>{
         include: [
             {
                 model: Form,
-                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr', 'createdAt'],
             },
             {
                 model: Goods
@@ -383,13 +457,13 @@ exports.searchFormData = async(req, res)=>{
                 res.status(200).send({
                     code: "4000",
                     message:"ok!",
-                    data:hidePhoneNumber(formDataProcess(formInfoData))
+                    data:hidePhoneNumber(formDataArrayProcess(formInfoData))
                 })
             }else{
                 res.status(200).send({
                     code: "4000",
                     message: "ok!",
-                    data: formDataProcess(formInfoData)
+                    data: formDataArrayProcess(formInfoData)
                 })
             }
            
@@ -411,7 +485,7 @@ exports.getTransitForm = async (req, res) => {
         include: [
             {
                 model: Form,
-                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr'],
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr', 'createdAt'],
             },
             {
                 model: Goods
@@ -431,7 +505,7 @@ exports.getTransitForm = async (req, res) => {
             res.status(200).send({
                 code: "4000",
                 message: "ok!",
-                data: formDataProcess(formInfoData)
+                data: formDataArrayProcess(formInfoData)
             })
         }
 
@@ -443,23 +517,16 @@ exports.getTransitForm = async (req, res) => {
         })
     })
 };
+exports.updateForm = async (req, res)=>{
+    const transitData={
+        transitAddr: req.body.transitAddr,
+        transitContact: req.body.transitContact,
+        transitAddrInfo: req.body.transitAddrInfo,
+        formAddr: req.body.formAddr
+    }
+    console.log(transitData)
+}
 
-// exports.testFind = async (req, res)=>{
-//     const formAddr = req.body.formAddr
-//     try{
-//         let token = await webase.getUserToken();
-//         let formData = await webase.getFormInfo(token,formAddr);
-//         res.status(200).send({
-//             code:"4000",
-//             message:"ok",
-//             data:formData,
-//         })
-
-//     }catch(err){
-//         console.error(err.message);
-//     }
-   
-// }
 
 
 

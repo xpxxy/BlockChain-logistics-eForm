@@ -3,13 +3,23 @@
     <el-card style="height: 100%">
       <template #header>
         <div class="card-header">
-          <span>运单数据列表</span>
+          <span>查询运单</span><br/>
+          <el-text type="info" size="small">本页面将通过区块链地址查询电子运单</el-text>
         </div>
       </template>
       <el-row>
+        <el-col :span="18">
+                    <el-input v-model="searchContent.searchData" placeholder="请输入表单头的区块链地址码" />
+                </el-col>
+                <el-col :span="5" :push="1">
+                    <el-button type="primary" @click="searchForm">搜索</el-button>
+                    <el-button type="default" @click="clear">清除列表数据</el-button>
+                </el-col>
+        <el-col :span="24"><br/></el-col>
         <el-col :span="24">
           <el-table
             v-loading="loading"
+            element-loading-text="拼命加载中"
             :data="tableData"
             style="width: 100%"
             height="750px"
@@ -136,17 +146,6 @@
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
-                            <i-ep-Van />
-                          </el-icon>
-                          承运公司
-                        </div>
-                      </template>
-                      {{ props.row.logisticsCompanyName }}
-                    </el-descriptions-item>
-                    <el-descriptions-item >
-                      <template #label>
-                        <div class="cell-item">
-                          <el-icon>
                             <i-ep-Compass />
                           </el-icon>
                           当前业务状态
@@ -171,7 +170,7 @@
                   <el-tooltip
                     class="box-item"
                     effect="dark"
-                    content="这里是商品信息详情"
+                    content="这里是商品信息详情,点击条码可以前往中国商品信息服务平台进一步查询细节信息"
                     placement="right"
                   >
                     <h3>商品基本信息</h3>
@@ -233,7 +232,7 @@
                           商品条码
                         </div>
                       </template>
-                      <span @click="get(value)">{{ props.row.good.barcode }}</span>
+                      <span @click="get(props.row.good.barcode)">{{ props.row.good.barcode }}</span>
                     </el-descriptions-item>
                   </el-descriptions>
 
@@ -263,7 +262,7 @@
             </el-table-column>
             <el-table-column width="70" prop="id" label="表单ID" />
             <el-table-column prop="logisticsInfoAddr" label="表单头区块链地址" />
-            <el-table-column prop="formAddr" label="中转方区块链地址" />
+            <el-table-column prop="formAddr" label="中转信息区块链地址" />
             <el-table-column prop="receiverAddr" label="收件人区块链地址" />
             <el-table-column prop="productAddr" label="商品区块链地址" />
             <el-table-column prop="createdAt" label="表单创建时间" />
@@ -282,39 +281,46 @@
 import axios from "axios";
 import { aesDecrypt, aesEncrypt } from "@/utils/utils";
 import { ElMessage } from "element-plus";
-import { ref, reactive, onMounted } from "vue";
-
-
-const emptyText = ref("");
-const empty = ref(false);
-
+import { reactive, ref } from "vue";
 const info = JSON.parse(
   aesDecrypt(localStorage.getItem("userSession"), "xpxxy")
 );
-const loading = ref(true);
-const tableData = ref([]);
-onMounted(() => {
-  axios.post("/api/getUserForm", { userAddr: info.address }).then((res) => {
-    if (res.data.code == "4001") {
-      ElMessage.info("暂时没有表单数据");
-      emptyText.value = "暂无数据";
-      loading.value = false;
-      return;
-    }
-    if (res.data.code == "4000") {
-      tableData.value = res.data.data;
-      loading.value = false;
-    }
-  }).catch(err=>{
-    loading.value = false;
-    ElMessage.error("超时")
-  });
+const emptyText = ref("");
+const searchContent = reactive({
+  searchData:"",
+  userAddr:info.address
 });
+
+
+const loading = ref(false);
+const tableData = ref([]);
+
+
+
+function searchForm(searchData){
+    //加载遮罩
+    loading.value = true
+  axios.post("/api/searchForm", searchContent ).then((res) => {
+   if (res.data.code == "4000") {
+        loading.value = false;
+        ElMessage.success("查询成功！")
+        tableData.value = res.data.data;
+      
+    }
+    else {
+        loading.value = false;
+        ElMessage.info("未找到您提供的表单信息")
+        
+    }
+  });
+};
+function clear(){
+    tableData.value = []
+    ElMessage.success("清除成功！")
+}
 function get(value){
-  
   window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
   
-
 }
 </script>
 <style scoped lang="less">
@@ -322,13 +328,13 @@ function get(value){
   padding: 0.3%;
 }
 .expandCard {
-  padding: 1%;
+  padding: 2%;
 }
-// p {
-//   // font-family:'Resource Han Rounded CN Normal';
-//   font-size: 14px;
-//   // font-weight: bold;
-// }
+p {
+  // font-family:'Resource Han Rounded CN Normal';
+  font-size: 14px;
+  // font-weight: bold;
+}
 h3 {
   display: inline-block;
 }

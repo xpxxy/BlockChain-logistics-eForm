@@ -6,11 +6,11 @@ import {ElMessage} from "element-plus";
 const userMenu = [
     { path: '/user/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/user/info', title: '我的信息', icon: IconEpDocument }, { path: '/user/changeinfo', title: '修改个人信息', icon: IconEpEdit }], },
     { path: '/user/form', title: "运单信息", icon: IconEpTickets, submenu: [{ path: '/user/formlist', title: '我的运单', icon: IconEpFiles }, { path: '/user/searchform', title: '查询运单', icon: IconEpSearch }] },
-    { path: '/user/searchProduct', title: '商品查询', icon: IconEpSearch, submenu: [] }
+    { path: '/user/product', title: '商品数据', icon: IconEpBox, submenu: [{ path: '/user/allproducts', title: '当前在库商品', icon: IconEpBox },{ path: '/user/searchproduct', title: '查询运单', icon: IconEpSearch }]}
 ];
 const transitMenu = [
     { path: '/transit/info', title: "我的信息", icon: IconEpHouse, submenu: [{ path: '/transit/info', title: '我的信息', icon: IconEpDocument }, { path: '/transit/changeinfo', title: '修改个人信息', icon: IconEpEdit }] },
-    { path: '/transit/form', title: "运单信息", icon: IconEpTickets, submenu: [{ path: '/transit/formList', title: '我的运单', icon: IconEpFiles }, {path: '/transit/createform', title: '创建表单', icon: IconEpEdit },]}
+    { path: '/transit/form', title: "运单中心", icon: IconEpTickets, submenu: [{ path: '/transit/formList', title: '我创建的运单', icon: IconEpFiles }, {path: '/transit/attendformList', title: '我参与的运单', icon: IconEpFiles}, {path: '/transit/createform', title: '创建表单', icon: IconEpEdit },{path: '/transit/searchform', title: '搜索表单', icon: IconEpSearch },{path: '/transit/updateform', title: '更新表单', icon: IconEpEditPen }]}
 ];
 const router = createRouter({
     history: createWebHistory(),
@@ -59,9 +59,14 @@ const router = createRouter({
                     component: () => import('../components/content/user/searchForm.vue'),
                 },
                 {
-                    path: 'searchProduct',
+                    path: 'searchproduct',
                     name: 'searchProduct',
                     component: () => import('../components/content/user/searchProduct.vue'),
+                },
+                {
+                    path: 'allproducts',
+                    name: 'allProducts',
+                    component: () => import('../components/content/user/allproducts.vue'),
                 }
             ]
         },
@@ -87,9 +92,24 @@ const router = createRouter({
                     component: () => import('../components/content/transit/TransitFormList.vue')
                 },
                 {
+                    path: 'attendformlist',
+                    name: 'attendFormList',
+                    component: ()=>import('../components/content/transit/AttendTransitFormList.vue')
+                },
+                {
                     path: 'createform',
                     name: 'createForm',
                     component: () => import('../components/content/transit/createForm.vue'),
+                },
+                {
+                    path: 'searchform',
+                    name: 'searchForm',
+                    component: () => import('../components/content/transit/searchForm.vue'),
+                },
+                {
+                    path: 'updateform',
+                    name: 'updateForm',
+                    component: () => import('../components/content/transit/updateForm.vue'),
                 }
             ]
         }

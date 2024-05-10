@@ -8,7 +8,7 @@
 const { Op } = require("sequelize");
 const db = require("../models");
 const webase = require("../config/WeBase");
-const { aesDecrypt } = require("../utils/utils");
+const { aesDecrypt, changeTimeFormat } = require("../utils/utils");
 const QueryString = require("qs");
 
 const Goods = db.goods;
@@ -53,7 +53,11 @@ exports.findOneGoods = async (req, res)=>{
                 productInfo = response[0]
                 productAddr = response[1]
             }catch(error){
-                console.error(error)
+                res.status(200).send({
+                    code:"3001",
+                    message:"您所求商品即不在库内也不在链上，请检查您的输入"
+                })
+                // console.error(error)
             }
             //*对拿到的商品列表进行检索，然后查找是否有符合的项目
             for(var i=0;i< productInfo.length;i++){
@@ -96,7 +100,7 @@ exports.findOneGoods = async (req, res)=>{
             if(data.status === 'off'){
                 res.status(200).send({
                     code:"3001",
-                    message:"没有找到有关您所查询的数据"
+                    message:"没有找到有关您所查询的数据,请检查您的输入是否正确"
                 })
                 return
             }
@@ -135,26 +139,43 @@ exports.findOneGoods = async (req, res)=>{
  * @requestType GET
  */
 exports.findAllGoods = async (req, res)=>{
-    // const goods = {
-    //    name:"",
-    //    produceDate:"",
-    //    expireDate:"",
-    //    type:"",
-    //    barcode:"",
-    //    productAddr:"", 
-    // }
     Goods.findAll().then(data =>{
         if(data != null){
             res.status(200).send({
-                code:"200",
+                code:"3000",
+                message:"ok!",
+                data:changeTimeFormat(data),
+            })
+            return
+        }
+        else{
+            res.status(200).send({
+                code:"3001",
+                message:"table doesnt have any data!",
+                
+            })
+            return
+        }
+    }).catch(err =>{
+        res.status(500).send({
+            message:
+                err.message || "连接数据库时出错，请查看console",
+        })
+    })
+};
+exports.getAllOnGoods = async (req, res)=>{
+    Goods.findAll().then(data =>{
+        if(data != null){
+            res.status(200).send({
+                code:"3000",
                 message:"ok!",
                 data:data,
             })
             return
         }
         else{
-            res.status(201).send({
-                code:"201",
+            res.status(200).send({
+                code:"3001",
                 message:"table doesnt have any data!",
                 
             })
@@ -167,7 +188,6 @@ exports.findAllGoods = async (req, res)=>{
         })
     })
 }
-
 /**
  * @description: 添加商品信息，返回链上地址
  * @param {*} req 请求体，包含商品信息

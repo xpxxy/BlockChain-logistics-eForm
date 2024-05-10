@@ -3,7 +3,7 @@
     <el-card style="height: 100%">
       <template #header>
         <div class="card-header">
-          <span>运单数据列表</span>
+          <span>参与中转运单数据列表</span>
         </div>
       </template>
       <el-row>
@@ -132,7 +132,7 @@
                       </template>
                       {{ props.row.productAddr }}
                     </el-descriptions-item>
-                    <el-descriptions-item min-width="100">
+                    <el-descriptions-item>
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
@@ -143,7 +143,7 @@
                       </template>
                       {{ props.row.logisticsCompanyName }}
                     </el-descriptions-item>
-                    <el-descriptions-item >
+                    <el-descriptions-item>
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
@@ -233,7 +233,7 @@
                           商品条码
                         </div>
                       </template>
-                      <span @click="get(value)">{{ props.row.good.barcode }}</span>
+                      {{ props.row.good.barcode }}
                     </el-descriptions-item>
                   </el-descriptions>
 
@@ -266,7 +266,7 @@
             <el-table-column prop="formAddr" label="中转方区块链地址" />
             <el-table-column prop="receiverAddr" label="收件人区块链地址" />
             <el-table-column prop="productAddr" label="商品区块链地址" />
-            <el-table-column prop="createdAt" label="表单创建时间" />
+            <el-table-column prop="createdAt" label="创建时间" />
           </el-table>
         </el-col>
       </el-row>
@@ -294,7 +294,7 @@ const info = JSON.parse(
 const loading = ref(true);
 const tableData = ref([]);
 onMounted(() => {
-  axios.post("/api/getUserForm", { userAddr: info.address }).then((res) => {
+  axios.post("/api/getAttendForm", { address: info.address }).then((res) => {
     if (res.data.code == "4001") {
       ElMessage.info("暂时没有表单数据");
       emptyText.value = "暂无数据";
@@ -310,12 +310,6 @@ onMounted(() => {
     ElMessage.error("超时")
   });
 });
-function get(value){
-  
-  window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
-  
-
-}
 </script>
 <style scoped lang="less">
 .content {

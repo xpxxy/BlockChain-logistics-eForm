@@ -240,7 +240,7 @@ async function createLogisticsInfo(token, data){
     try{
         let res = await axios(options);
         let LogisticsInfoAddr = res.data.data.output;
-        console.log(res.data)
+        // console.log(res.data)
         return utils.addressToString(LogisticsInfoAddr);
     }
     catch(error){
@@ -274,7 +274,7 @@ async function createLogisticsForm(token,data){
     try{
         let res = await axios(options);
         let formAddr = res.data.data.output;
-        console.log(res.data)
+        // console.log(res.data)
         return utils.addressToString(formAddr);
     }
     catch(error){
@@ -437,6 +437,7 @@ async function getFormInfo(token, data){
     }
 
 };
+async function updateForm(token, data){}
 
 
 module.exports = {

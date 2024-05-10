@@ -11,7 +11,7 @@
                 </el-col>
                 <el-col :span="24"><br/></el-col>
                 <el-col :span="24">
-                    <el-table v-loading="loading" :data="tableData" style="width: 100%;" height="600px" stripe :border="true">
+                    <el-table v-loading="loading" element-loading-text="正在查询，请稍后。若当前库中不存在则可能需要执行链上查询，这可能需要数秒完成，请耐心等待" :data="tableData" style="width: 100%;" height="600px" stripe :border="true">
                         <el-table-column prop="name" label="商品名称" />
                         <el-table-column prop="productType" label="类别" />
                         <el-table-column prop="productionDate" label="生产日期" />
@@ -54,7 +54,7 @@ function search() {
         }
         if(res.data.code == '3001'){
             loading.value = false;
-            ElMessage.info("未查询到您输入商品信息")
+            ElMessage.info(res.data.message)
         }
     }).catch(err=>{
         loading.value = false;

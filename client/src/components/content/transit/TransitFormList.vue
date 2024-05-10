@@ -3,7 +3,7 @@
     <el-card style="height: 100%">
       <template #header>
         <div class="card-header">
-          <span>运单数据列表</span>
+          <span>发送运单数据列表</span>
         </div>
       </template>
       <el-row>
@@ -132,12 +132,46 @@
                       </template>
                       {{ props.row.productAddr }}
                     </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Van />
+                          </el-icon>
+                          承运公司
+                        </div>
+                      </template>
+                      {{ props.row.logisticsCompanyName }}
+                    </el-descriptions-item>
+                    <el-descriptions-item >
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Compass />
+                          </el-icon>
+                          当前业务状态
+                        </div>
+                      </template>
+                      <el-tag v-if="props.row.status==='on'" type="success">正在进行当中</el-tag>
+                      <el-tag v-if="props.row.status==='off'" type="info">正在进行当中</el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label>
+                        <div class="cell-item">
+                          <el-icon>
+                            <i-ep-Clock />
+                          </el-icon>
+                          表单创建时间
+                        </div>
+                      </template>
+                      {{ props.row.createdAt }}
+                    </el-descriptions-item>
                   </el-descriptions>
 
                   <el-tooltip
                     class="box-item"
                     effect="dark"
-                    content="这里是商品信息详情"
+                    content="这里是商品信息详情,点击条形码数据可以前往中国商品服务平台查询更加详细的信息"
                     placement="right"
                   >
                     <h3>商品基本信息</h3>
@@ -199,7 +233,8 @@
                           商品条码
                         </div>
                       </template>
-                      {{ props.row.good.barcode }}
+                      <span @click="get(props.row.good.barcode)">{{ props.row.good.barcode }}</span>
+                      
                     </el-descriptions-item>
                   </el-descriptions>
 
@@ -222,15 +257,17 @@
                       prop="transitContact"
                     />
                     <el-table-column label="中转地址" prop="transitAddrInfo" />
+                    <el-table-column label="更新时间" prop="createdAt" />
                   </el-table>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="id" label="表单序号" />
+            <el-table-column width="70" prop="id" label="表单ID" />
             <el-table-column prop="logisticsInfoAddr" label="表单头区块链地址" />
             <el-table-column prop="formAddr" label="中转方区块链地址" />
             <el-table-column prop="receiverAddr" label="收件人区块链地址" />
             <el-table-column prop="productAddr" label="商品区块链地址" />
+            <el-table-column prop="createdAt" label="表单创建时间" />
           </el-table>
         </el-col>
       </el-row>
@@ -274,6 +311,11 @@ onMounted(() => {
     ElMessage.error("超时")
   });
 });
+
+function get(value){
+  window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
+  // console.log(value)
+}
 </script>
 <style scoped lang="less">
 .content {
