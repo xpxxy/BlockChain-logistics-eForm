@@ -22,7 +22,7 @@
             <el-step title="第一步" description="填写发件基础信息">
               <template #icon>
                 <el-icon>
-                  <i-ep-DocumentAdd />
+                  <i-ep-Box />
                 </el-icon>
               </template>
             </el-step>
@@ -520,8 +520,8 @@ function submit() {
   axios.post("/api/createForm",ruleForm).then(res=>{
     if(res.data.code=='4000'){
       loading.value = false
-      ElMessage.success("区块链电子表单创建成功！请前往“我创建的运单”页面中查看表单的详细数据。")
-      router.push("/transit/transitformList");
+      ElMessage.success("区块链电子表单创建成功,请前往库内表单查看最后一项")
+      router.push("/admin/allformList");
     }
     else{
       loading.value = false

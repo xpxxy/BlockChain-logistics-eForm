@@ -10,7 +10,7 @@
         <el-col :span="24">
           <el-table
             v-loading="loading"
-            :data="tableData"
+            :data="paginatedData"
             style="width: 100%"
             height="750px"
             stripe
@@ -153,7 +153,7 @@
                         </div>
                       </template>
                       <el-tag v-if="props.row.status==='on'" type="success">正在进行当中</el-tag>
-                      <el-tag v-if="props.row.status==='off'" type="info">正在进行当中</el-tag>
+                      <el-tag v-if="props.row.status==='off'" type="info">表单已完成</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item>
                       <template #label>
@@ -272,9 +272,12 @@
         </el-col>
       </el-row>
       <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="tableData.length"
+          background
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="prev, pager, next"
+          :total="totalItems"
       />
     </el-card>
   </div>
@@ -283,7 +286,7 @@
 import axios from "axios";
 import { aesDecrypt, aesEncrypt } from "@/utils/utils";
 import { ElMessage } from "element-plus";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 
 
 const emptyText = ref("");
@@ -316,6 +319,17 @@ function get(value){
   window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
   // console.log(value)
 }
+const totalItems = computed(() => tableData.value.length); 
+const pageSize = ref(8); // 每页显示的条目数  
+const currentPage = ref(1); // 当前页码 
+const paginatedData = computed(() => {  
+      const start = (currentPage.value - 1) * pageSize.value;  
+      const end = start + pageSize.value;  
+      return tableData.value.slice(start, end);  
+    });
+function handleCurrentChange(newPage) {  
+      currentPage.value = newPage;  
+}  
 </script>
 <style scoped lang="less">
 .content {

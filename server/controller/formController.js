@@ -364,6 +364,42 @@ exports.getUserForm = async (req, res) => {
         })
     })
 };
+exports.getAllForm = async (req, res) => {
+    FormInfo.findAll({
+        include: [
+            {
+                model: Form,
+                attributes: ['id', 'transitAddr', 'transitContact', 'transitAddrInfo', 'formAddr', 'createdAt'],
+            },
+            {
+                model: Goods
+            }
+        ],
+        order: [[{ model: Form }, 'id', 'ASC']],
+
+
+    }).then(formInfoData => {
+        if (formInfoData.length == 0) {
+            res.status(200).send({
+                code: "4001",
+                message: "没有"
+            })
+        } else {
+            res.status(200).send({
+                code: "4000",
+                message: "ok!",
+                data: formDataArrayProcess(formInfoData)
+            })
+        }
+
+
+    }).catch(err => {
+        res.status(500).send({
+            code: "500",
+            message: err.message || "数据库报错！"
+        })
+    })
+};
 exports.getAttendForm = async (req, res) => {
     const Addr = req.body.address;
     const promises = [];
@@ -518,13 +554,139 @@ exports.getTransitForm = async (req, res) => {
     })
 };
 exports.updateForm = async (req, res)=>{
+    let working = false;
     const transitData={
+        logisticsInfoAddr: req.body.logisticsInfoAddr,
         transitAddr: req.body.transitAddr,
         transitContact: req.body.transitContact,
         transitAddrInfo: req.body.transitAddrInfo,
         formAddr: req.body.formAddr
     }
-    console.log(transitData)
+    // console.log(transitData)
+    try{
+        let token = await webase.getUserToken();
+        let res = await webase.updateForm(token, transitData)
+        if(res =='Success'){
+            working = true;
+        }
+        else{
+            working = false;
+        }
+    }catch(error){
+        console.error(error)
+        return;
+    };
+    if(working){
+        console.log(working);
+        
+        await FormInfo.findOne({
+            attributes:['id'],
+            where:{logisticsInfoAddr: transitData.logisticsInfoAddr}
+        }).then(result=>{
+            transitData.formInfoId = result.id
+            console.log(transitData);
+            Form.create(transitData).then(createResult=>{
+                console.log(createResult)
+                if(createResult.length!=0){
+                    res.status(200).send({
+                        code:"4007",
+                        message:"更新成功！",
+                        data:createResult
+                    })
+                }else{
+                    res.status(200).send({
+                        code:"4008",
+                        message:"失败"
+                    })
+                }
+
+                }).catch(err=>{
+                    console.error(err.message);
+                    res.status(200).send({
+                        code:"500",
+                        message:"数据库错误",
+                        error:err.message
+
+                    })
+            }).catch(error=>{
+                console.error(error.message);
+                res.status(200).send({
+                    code:"500",
+                    message:"数据库错误",
+                    error:error.message
+                })
+            })
+        })
+    }
+}
+exports.chengeFormStatus = async (req, res)=>{
+    let working = false;
+    const transitData={
+        logisticsInfoAddr: req.body.logisticsInfoAddr,
+        transitAddr: req.body.transitAddr,
+        transitContact: req.body.transitContact,
+        transitAddrInfo: req.body.transitAddrInfo,
+        formAddr: req.body.formAddr
+    }
+    // console.log(transitData)
+    try{
+        let token = await webase.getUserToken();
+        let res = await webase.updateForm(token, transitData)
+        if(res =='Success'){
+            working = true;
+        }
+        else{
+            working = false;
+        }
+    }catch(error){
+        console.error(error)
+        return;
+    };
+    if(working){
+        console.log(working);
+        await FormInfo.findOne({
+            attributes:['id'],
+            where:{logisticsInfoAddr: transitData.logisticsInfoAddr}
+        }).then(async result=>{
+            transitData.formInfoId = result.id
+            console.log(transitData);
+            await Form.create(transitData).then(async response => {
+                try {
+                    await Form.update(
+                        { status: 'off' },
+                        { where: { logisticsInfoAddr: transitData.logisticsInfoAddr } }
+                        
+                    )
+                    await FormInfo.update(
+                        { status: "off" },
+                        { where: { logisticsInfoAddr: transitData.logisticsInfoAddr } }
+                    )
+                } catch (err) {
+                    res.status(200).send({
+                        code: "4006",
+                        message: "修改失败"
+                    })
+                };
+                res.status(200).send({
+                    code:"4009",
+                    message:"修改成功！"
+                })
+            }).catch(err=>{
+                res.status(500).send({
+                    code:"500",
+                    message:"尝试更新物流中转方出错！"
+                })
+            })
+            
+            
+            
+        })
+    }else{
+        res.status(500).send({
+            code:"4004",
+            message:"webase错误"
+        })
+    }
 }
 
 

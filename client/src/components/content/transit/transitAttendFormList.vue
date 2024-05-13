@@ -271,9 +271,12 @@
         </el-col>
       </el-row>
       <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="tableData.length"
+          background
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="prev, pager, next"
+          :total="totalItems"
       />
     </el-card>
   </div>

@@ -15,7 +15,7 @@ const account = "admin";
 const accountPwd = "ad3ebe5b756160942b0dff687e687df2ec615d3be6f8dcecf30536a5bdc935fb";
 const groupId = 'group0';
 //智能合约LogisticsForm(综合合约)地址
-const contractAddr = "0x7288e7d58c74afc02eec34cbc8f041453a01290a";
+const contractAddr = "0x943f2cd75a393e987d5f3873cad2fc71128715b0";
 //合约部署者/调用合约人
 const xpxxy = "0x89e4dd8f5133a951817976704dc0fc6c541b1456";
 //合约在webase的ID
@@ -437,7 +437,32 @@ async function getFormInfo(token, data){
     }
 
 };
-async function updateForm(token, data){}
+async function updateForm(token, data){
+    const options = {
+        method:'post',
+        url:"http://127.0.0.1:5001/WeBASE-Node-Manager/contract/transaction",
+        headers:{'AuthorizationToken': 'Token '+token, "content-type":"application/json"},
+        data:
+            {
+                "groupId": groupId,
+                "user": xpxxy,//传入的交易用户
+                "contractName": "LogisticsForm",//调用的合约名
+                "funcName": "updateLogisticsForm",//调用的合约方法
+                "funcParam": [data.formAddr, data.transitAddr, data.transitContact,data.transitAddrInfo],
+                "contractAbi": contractAbi,
+                "contractId": contractID,
+                "contractAddress": contractAddr,//合约地址
+            }
+    };
+    try{
+        let res = await axios(options);
+        // console.log(res.data.data);
+        return res.data.data.message
+    }catch(error){
+        console.error(error+"webase操作出错！")
+        // return null
+    }
+}
 
 
 module.exports = {
@@ -451,6 +476,7 @@ module.exports = {
     createLogisticsForm,
     getLogisticsForm,
     getFormInfo,
+    updateForm
     
     
     

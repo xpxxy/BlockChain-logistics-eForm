@@ -12,7 +12,7 @@
                         <el-col :span="24">
                             <el-form style="max-width: 600px;" label-width="auto">
                                 <el-form-item label="手机号" prop="phone">
-                                    <el-input id="phone" v-model="userInfo.phone">
+                                    <el-input disabled id="phone" v-model="userInfo.phone">
                                         <template #prefix>
                                             <el-icon class="el-input__icon">
                                                 <i-ep-Iphone />
@@ -20,8 +20,8 @@
                                         </template>
                                     </el-input>
                                 </el-form-item>
-                                <el-form-item label="用户名" prop="userID">
-                                    <el-input id="userID" v-model="userInfo.userID">
+                                <el-form-item  label="用户名" prop="userID">
+                                    <el-input disabled id="userID" v-model="userInfo.userID">
                                         <template #prefix>
                                             <el-icon class="el-input__icon">
                                                 <i-ep-User />
@@ -38,8 +38,8 @@
                                         </template>
                                     </el-input>
                                 </el-form-item>
-                                <el-form-item label="真实姓名" prop="name">
-                                    <el-input id="userID" v-model="userInfo.name">
+                                <el-form-item  label="真实姓名" prop="name">
+                                    <el-input disabled id="userID" v-model="userInfo.name">
                                         <template #prefix>
                                             <el-icon class="el-input__icon">
                                                 <i-ep-UserFilled />
@@ -52,7 +52,7 @@
                         </el-col>
                         <el-col :span="4"></el-col>
                         <el-col :span="3">
-                            <el-button v-loading.fullscreen.lock="fullscreenLoading" @click="submit()" type="primary">
+                            <el-button  @click="change()" type="primary">
                                 <template #icon>
                                     <el-icon><i-ep-CircleCheck /></el-icon>
                                 </template>
@@ -71,7 +71,10 @@
 <script setup>
 import {ref, reactive, onMounted} from 'vue'
 import axios from 'axios'
-import { aesDecrypt } from '../../../utils/utils';
+import { aesDecrypt } from '@/utils/utils.js';
+import {useRouter} from "vue-router";
+import {ElLoading, ElMessage} from "element-plus";
+const router = useRouter()
 const info = JSON.parse(aesDecrypt(localStorage.getItem('userSession'),'xpxxy'))
 // console.log(info)
 const userInfo = reactive({
@@ -90,7 +93,22 @@ onMounted(()=>{
     userInfo.phone = info.phone
     userInfo.status = info.status
 })
-
+function change(){
+  const loadingInstance = ElLoading.service({text:"正在更新中"})
+  if(userInfo.pw.length===0){
+    ElMessage.error("您不能提交空表！")
+    return
+  }
+  axios.post("/api/changeInfo",userInfo).then(res=>{
+    if(res.data.code ==='2000'){
+      axios.post("/api/logout")
+      loadingInstance.close();
+      ElMessage.success("修改成功！")
+      localStorage.removeItem('userSession');
+      router.push("/login")
+    }
+  })
+}
 
 </script>
 <style scoped lang="less">

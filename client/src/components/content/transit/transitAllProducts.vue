@@ -20,6 +20,7 @@
               <p>{{ emptyText }}</p>
             </template>
             <el-table-column prop="name" label="商品名称" />
+            <el-table-column prop="productAddr" label="商品区块链地址" />
             <el-table-column prop="productionDate" label="商品生产日期" />
             <el-table-column prop="expirationDate" label="商品保质期至" />
             <el-table-column prop="productType" label="商品类别" />
@@ -43,6 +44,7 @@
       </el-row>
       <el-pagination
           background
+
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-size="pageSize"
@@ -70,7 +72,7 @@
 <script setup>
 import axios from "axios";
 import { ElMessage } from "element-plus";
-import {ref, reactive, onMounted, computed} from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 
 const dialogVisible = ref(false)
 const emptyText = ref("");
@@ -102,17 +104,17 @@ function display(value){
     dialogVisible.value = true;
     searchBarcode.value = value;
 }
-const totalItems = computed(() => tableData.value.length);
-const pageSize = ref(8); // 每页显示的条目数
-const currentPage = ref(1); // 当前页码
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return tableData.value.slice(start, end);
-});
-function handleCurrentChange(newPage) {
-  currentPage.value = newPage;
-}
+const totalItems = computed(() => tableData.value.length); 
+const pageSize = ref(8); // 每页显示的条目数  
+const currentPage = ref(1); // 当前页码 
+const paginatedData = computed(() => {  
+      const start = (currentPage.value - 1) * pageSize.value;  
+      const end = start + pageSize.value;  
+      return tableData.value.slice(start, end);  
+    });
+function handleCurrentChange(newPage) {  
+      currentPage.value = newPage;  
+}  
 </script>
 <style scoped lang="less">
 .content {

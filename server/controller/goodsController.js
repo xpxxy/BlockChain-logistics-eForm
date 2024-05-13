@@ -215,19 +215,19 @@ exports.addNewGoods = async (req, res)=>{
     }
     Goods.create(product).then(data =>{
         if(!product.productAddr){
-            res.status(400).send({
-                code:"400",
+            res.status(500).send({
+                code:"500",
                 message:"插入地址为空，请检查webase连接"
             })
-            return
+
         }
         else{
             res.status(200).send({
-                code:"200",
+                code:"3002",
                 message:"创建成功！",
-                data:data
+                // data:data
             })
-            return
+
         }
     }).catch(err=>{
         res.status(500).send({

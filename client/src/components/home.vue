@@ -42,10 +42,10 @@ import { useRouter } from 'vue-router';
 const activeIndex = ref('0')
 const router = useRouter()
 function toService(){
-  router.push('/user/form')
+  router.push('/user/userformlist')
 }
 function toUser(){
-  router.push('/user/info')
+  router.push('/user/userinfo')
 }
 
 </script>

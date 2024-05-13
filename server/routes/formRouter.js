@@ -14,6 +14,8 @@ module.exports = app =>{
     router.post('/api/getTransitForm', formRouter.getTransitForm);
     router.post('/api/getAttendForm', formRouter.getAttendForm);
     router.post('/api/updateForm', formRouter.updateForm);
+    router.post('/api/changeFormStatus', formRouter.chengeFormStatus);
+    router.post('/api/getAllForm', formRouter.getAllForm);
     app.use('/', router);
     
 }

@@ -3,7 +3,7 @@
     <el-card style="height: 100%">
       <template #header>
         <div class="card-header">
-          <span>运单数据列表</span>
+          <span>更改运单状态</span>
         </div>
       </template>
       <el-row>
@@ -132,7 +132,7 @@
                       </template>
                       {{ props.row.productAddr }}
                     </el-descriptions-item>
-                    <el-descriptions-item min-width="100">
+                    <el-descriptions-item>
                       <template #label>
                         <div class="cell-item">
                           <el-icon>
@@ -171,7 +171,7 @@
                   <el-tooltip
                     class="box-item"
                     effect="dark"
-                    content="这里是商品信息详情"
+                    content="这里是商品信息详情,点击条形码数据可以前往中国商品服务平台查询更加详细的信息"
                     placement="right"
                   >
                     <h3>商品基本信息</h3>
@@ -233,7 +233,8 @@
                           商品条码
                         </div>
                       </template>
-                      <span @click="get(value)">{{ props.row.good.barcode }}</span>
+                      <span @click="get(props.row.good.barcode)">{{ props.row.good.barcode }}</span>
+                      
                     </el-descriptions-item>
                   </el-descriptions>
 
@@ -267,25 +268,96 @@
             <el-table-column prop="receiverAddr" label="收件人区块链地址" />
             <el-table-column prop="productAddr" label="商品区块链地址" />
             <el-table-column prop="createdAt" label="表单创建时间" />
+            <el-table-column prop="status" label="表单当前状态">
+              <template #default={row}>
+                <el-tag v-if="row.status==='on'" type="success">状态正常</el-tag>
+                <el-tag v-if="row.status==='off'" type="info">停用</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="操作">
+              <template #default={row}>
+                <el-button v-if="row.status==='off'" disabled  type="danger" >已被停用不可操作</el-button>
+                <el-button v-if="row.status==='on'"  @click="handleStop(row)" type="danger" >结束表单</el-button>
+              </template>
+            </el-table-column>
+
           </el-table>
         </el-col>
       </el-row>
       <el-pagination
           background
+
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-size="pageSize"
           layout="prev, pager, next"
           :total="totalItems"
       />
+      <el-dialog
+        v-model="dialogVisible"
+        title="中转方信息表单填写"
+        width="600"
+        :show-close="false"
+        :close-on-click-modal="false"
+      >
+      <el-row>
+        <el-col>
+          <el-form :rules="Rules" ref="transitFormRef" :model="transitForm" label-width="auto">
+          <el-form-item label="中转方区块链地址" prop="transitAddr">
+            <el-input v-model="transitForm.transitAddr" placeholder="请填入区块链地址">
+              <template #prefix>
+                    <el-icon class="el-input__icon">
+                      <i-ep-Coin />
+                    </el-icon>
+                  </template>
+            </el-input>  
+          </el-form-item>
+          <el-form-item label="中转方联系电话" prop="transitContact" >
+            <el-input v-model="transitForm.transitContact" placeholder="请填入电话号码">
+              <template #prefix>
+                    <el-icon class="el-input__icon">
+                      <i-ep-Phone />
+                    </el-icon>
+                  </template>
+            </el-input> 
+              
+          </el-form-item>
+          <el-form-item label="中转地址" prop="transitAddrInfo">
+              <div style="display:flex; flex-warp:nowarp; width:100%">
+                <el-cascader placeholder="请选择" style="width: 70%" size="default" :options="pcaTextArr" v-model="transitForm.transitAddrInfo1" @change="handleCascaderChange"></el-cascader>
+                <el-input id="transitAddrInfo" placeholder="请输入详细地址" v-model="transitForm.transitAddrInfo2">
+                  <template #prefix>
+                    <el-icon class="el-input__icon">
+                      <i-ep-Location />
+                    </el-icon>
+                  </template>
+                </el-input>
+              </div>
+            </el-form-item>
+        </el-form>
+        </el-col>
+        
+      </el-row>
+        
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消操作</el-button>
+            <el-button type="primary" @click="show"> 确认操作 </el-button>
+          </div>
+        </template>
+      </el-dialog>
     </el-card>
   </div>
+
+
+
 </template>
 <script setup>
 import axios from "axios";
 import { aesDecrypt, aesEncrypt } from "@/utils/utils";
 import { ElMessage } from "element-plus";
-import { ref, reactive, onMounted,computed } from "vue";
+import {ref, reactive, onMounted, computed} from "vue";
+import { pcaTextArr } from "element-china-area-data"
 
 
 const emptyText = ref("");
@@ -295,9 +367,34 @@ const info = JSON.parse(
   aesDecrypt(localStorage.getItem("userSession"), "xpxxy")
 );
 const loading = ref(true);
+const dialogVisible =ref(false)
 const tableData = ref([]);
+const transitForm = reactive({
+  formAddr: "",
+  transitAddr:"",
+  transitContact:"",
+  transitAddrInfo:"",
+  transitAddrInfo1:[],
+  transitAddrInfo2:""
+})
+const transitFormRef = ref();
+const Rules = reactive({
+  transitAddr:[ { required: true, message: "这是必填项目", trigger: "change" }],
+  transitContact:[{ required: true, message: "这是必填项目", trigger: "change" }],
+  transitAddrInfo: [
+    { required: true, message: "这是必填项目", trigger: "change" },
+  ],
+  transitAddrInfo1: [
+    { required: true, message: "这是必填项目", trigger: "change" },
+  ],
+  transitAddrInfo2: [
+    { required: true, message: "这是必填项目", trigger: "change" },
+  ]
+});
+
+
 onMounted(() => {
-  axios.post("/api/getUserForm", { userAddr: info.address }).then((res) => {
+  axios.post("/api/getTransitForm", { userAddr: info.address }).then((res) => {
     if (res.data.code == "4001") {
       ElMessage.info("暂时没有表单数据");
       emptyText.value = "暂无数据";
@@ -313,14 +410,92 @@ onMounted(() => {
     ElMessage.error("超时")
   });
 });
-function get(value){
-  
-  window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
-  
+function handleStop(row){
+  transitForm.formAddr = row.formAddr;
+  transitForm.logisticsInfoAddr = row.logisticsInfoAddr;
+  dialogVisible.value = true;
 
 }
+function handleCascaderChange(value){
+  let area =''
+  transitForm.transitAddrInfo1.forEach((item) =>{
+    area+=item;
+  })
+  transitForm.transitAddrInfo = area;
+}
+function show(){
+  
+  transitForm.transitAddrInfo = transitForm.transitAddrInfo+transitForm.transitAddrInfo2
+  transitFormRef.value.validate(async (valid) => {
+    if(valid){
+      submit()
+    }
+    else{
+      ElMessage.error("请先完成表单")
+    }
+  });
+}
+function emptyForm(){
+          transitForm.formAddr="",
+          transitForm.transitAddr="",
+          transitForm.transitAddrInfo="",
+          transitForm.transitContact="",
+          transitForm.transitAddrInfo1=[],
+          transitForm.transitAddrInfo2="",
+          transitForm.logisticsInfoAddr=""
+}
+const submit = () => {
+  ElMessageBox.confirm('请再次确认您的数据正确无误，一旦更新将存储且不可修改！','提示',{
+    confirmButtonText:'确定并提交',
+    cancelButtonText:'不，我还需要修改',
+    type:"warning",
+    showClose:'false',
+    beforeClose:(action, instance, done)=>{
+      if(action ==='cancel'){
+        ElMessage.info("取消")
+      };
+      done();
+    }
+  }).then(action=>{
+    if(action === 'confirm'){
+      const loadingInstance = ElLoading.service({text:"正在更新中"})
+      dialogVisible.value = false;
+      axios.post('/api/changeFormStatus', transitForm).then(res=>{
+        if(res.data.code==='4009'){
+          axios.post("/api/getTransitForm", { userAddr: info.address }).then(response=>{
+            if(response.data.code == '4000'){
+              tableData.value = response.data.data;
+              loadingInstance.close()
+              ElMessage.success("更新成功！")
+              emptyForm()
+            }else{
+              loadingInstance.close();
+              ElMessage.error("更新列表时出错！")
+            }
+          })
+        }else{
+          loadingInstance.close()
+          ElMessage.error("服务器出错了")
+        }
+      }).catch(err=>{
+        // console.log(err)
+        loadingInstance.close();
+        ElMessage.error("出错了")
+      })
+    }
+  })
+    
+    
+   
+}
+
+
+function get(value){
+  window.open("https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword="+value)
+  // console.log(value)
+}
 const totalItems = computed(() => tableData.value.length);
-const pageSize = ref(8); // 每页显示的条目数
+const pageSize = ref(10); // 每页显示的条目数
 const currentPage = ref(1); // 当前页码
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
