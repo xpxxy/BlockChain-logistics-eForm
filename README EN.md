@@ -26,8 +26,8 @@ This system is a blockchain e-form system based on Vue+Express+FiscoBocs.
   
 ## Deployment requirements:
 
-|Software|Version
-|-|-|NodeJS|18
+|Software|Version|
+|-|-|
 |NodeJS|18+|
 |NPM|9.6+|
 
