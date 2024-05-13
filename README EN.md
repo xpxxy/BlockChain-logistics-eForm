@@ -35,8 +35,8 @@ Packages needed to run the base of the front and back end:
 
 |Package Name|Version|
 |-|-|
-|express|4.18.2+||vite|4.2.2+||vite
-|vite|4.2.1+|
+|express|4.18.2+|
+|vite|4.2.2+|
 
 All other packages are managed through NPM
 
@@ -47,7 +47,7 @@ All other packages are managed through NPM
 ### Front-end deployment:
 The front-end executes in turn.
 ```
-cd /client
+cd client
 npm install
 ```
 Wait for the installation to complete and the server will start on localhost:8000, make sure this port is not occupied.
@@ -65,7 +65,7 @@ module.exports={
     DB: “deliveryDB”, #database name
     dialect: “mysql”, #type of database to connect to
 }
-``
+```
 The sql file is given
 
 Go to webase.js under the same file and change a few variables in the header
@@ -75,9 +75,9 @@ const accountPwd = “”; #Pwd of the password, which can be retrieved in F12 o
 const groupId = ''; #The cluster of the operation
 const contractAddr = “”; #Address of the contract
 const xpxxy = “”; #User calling the contract
-``''
+```
 Enable terminal execution in the server directory:
-``
+```
 npm install
 ```
 Wait for the installation to complete and then execute:
@@ -88,15 +88,15 @@ Need to make sure that port 3000 is not occupied, if it is occupied modify the p
 ## Blockchain side deployment:
 Refer to webase's official documentation for the complete deployment chapter [WeBaseDoc](https://webasedoc.readthedocs.io/zh-cn/lab/docs/WeBASE/install.html)
 Two files need to be modified after deployment is complete:
-1. application.yml under conf of webase-node-mgr.
-``
+application.yml under conf of webase-node-mgr.
+```
 ....
 Spring.
        ....
         url:....     # Add &useSSL=false at the end
 ....
 enableVerficationCode: false
-``
+```
 The same goes for the fields under spring in the file with the same name under webase-sign's conf.
 
 If it is a virtual machine, please open the virtual machine port 5000-5004.
