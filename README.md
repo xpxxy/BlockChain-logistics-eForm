@@ -99,6 +99,10 @@ enableVerficationCode: false
 ```
 同理在webase-sign的conf下的同名文件的spring下的字段也是一样的
 
+若是虚拟机，请开放虚拟机端口5000-5004
+
+若是远程服务器，请修改webase.js的内的各项接口的连接地址
+
 合约的部署可在webase浏览器端直接完成，不在赘述
 ## 合约部署：
 ### 部署顺序：
